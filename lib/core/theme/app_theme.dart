@@ -27,7 +27,7 @@ class AppTheme {
       ),
 
       // Premium Card Style
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.surface,
         elevation: 0,
         margin: const EdgeInsets.symmetric(vertical: 8),
