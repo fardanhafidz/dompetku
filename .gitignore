@@ -44,3 +44,8 @@ app.*.map.json
 
 #antigrav
 /antigrav
+
+# Secret environment variables
+.env
+.env.*
+lib/core/env/env.g.dart
