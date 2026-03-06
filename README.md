@@ -14,10 +14,12 @@ This project is built using the **Clean Architecture** pattern to ensure scalabi
 
 *   **Framework**: Flutter SDK
 *   **State Management**: `flutter_bloc` / `riverpod` (TBD)
+*   **Routing**: `go_router` (Nested navigation & deep linking)
 *   **Dependency Injection**: `get_it`
 *   **Local Database**: `isar` (NoSQL)
 *   **Cloud Backend**: `supabase_flutter` (PostgreSQL, Auth)
 *   **Data Visualization**: `syncfusion_flutter_charts`
+*   **UI Effects**: `shimmer` (Loading skeletons)
 
 ---
 
