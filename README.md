@@ -1,16 +1,23 @@
-# dompetku
+# 💰 Dompetku (Expense Tracker)
 
-A new Flutter project.
+A smart, clean, and offline-first personal finance tracker mobile application built with Flutter.
 
-## Getting Started
+Dompetku helps you track your daily expenses effortlessly, featuring an AI-powered receipt scanner, beautiful insights charts, and seamless cloud synchronization.
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠️ Tech Stack & Architecture
+
+This project is built using the **Clean Architecture** pattern to ensure scalability, testability, and separation of concerns.
+
+*   **Framework**: Flutter SDK
+*   **State Management**: `flutter_bloc` / `riverpod` (TBD)
+*   **Dependency Injection**: `get_it`
+*   **Local Database**: `isar` (NoSQL)
+*   **Cloud Backend**: `supabase_flutter` (PostgreSQL, Auth)
+*   **Data Visualization**: `syncfusion_flutter_charts`
+
+---
+
