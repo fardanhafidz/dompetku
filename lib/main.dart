@@ -1,8 +1,21 @@
+import 'package:dompetku/core/env/env.dart';
 import 'package:flutter/material.dart';
-import 'core/theme/app_theme.dart';
+import 'shared/theme/app_theme.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'core/di/injection_container.dart' as di;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: Env.supabaseUrl,
+    anonKey: Env.supabaseKey,
+  );
+
+  await di.init();
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
