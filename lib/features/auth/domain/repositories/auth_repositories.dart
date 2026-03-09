@@ -9,8 +9,14 @@ abstract class AuthRepository {
     required String email,
     required String password,
   });
-  Future<AuthSessionEntity> signIn({required String email, required password});
-  Future<AuthSessionEntity?> checkAuthStatus();
-  Future<bool> authenticateBiometric();
-  Future<void> logOut();
+  Future<Either<Failure, AuthSessionEntity>> signIn({
+    required String email,
+    required String password,
+  });
+
+  Future<Either<Failure, AuthSessionEntity?>> checkAuthStatus();
+
+  Future<Either<Failure, bool>> authenticateBiometric();
+
+  Future<Either<Failure, void>> logOut();
 }
