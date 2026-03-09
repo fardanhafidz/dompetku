@@ -41,9 +41,9 @@ void main() {
   });
 
   group('AuthRemoteDataSourceImpl', () {
-    final tEmail = 'test@example.com';
-    final tPassword = 'password123';
-    final tFullName = 'Test User';
+    const tEmail = 'test@example.com';
+    const tPassword = 'password123';
+    const tFullName = 'Test User';
 
     final tUser = User(
       id: 'uid-123',
@@ -101,7 +101,7 @@ void main() {
         // arrange
         when(() => mockGoTrueClient.signInWithPassword(
                 email: tEmail, password: tPassword))
-            .thenThrow(AuthException('Invalid login credentials'));
+            .thenThrow(const AuthException('Invalid login credentials'));
 
         // act & assert
         expect(() => dataSource.signIn(email: tEmail, password: tPassword),

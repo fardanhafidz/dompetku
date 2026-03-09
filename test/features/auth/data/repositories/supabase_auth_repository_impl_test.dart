@@ -28,9 +28,9 @@ void main() {
   });
 
   group('SupabaseAuthRepositoryImpl', () {
-    final tEmail = 'test@example.com';
-    final tPassword = 'password123';
-    final tFullName = 'Test User';
+    const tEmail = 'test@example.com';
+    const tPassword = 'password123';
+    const tFullName = 'Test User';
     final tUserModel = AuthSessionModel(
       user: UserModel(
         id: '123',

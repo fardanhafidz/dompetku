@@ -50,11 +50,6 @@ class MockAuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, User?>> getCurrentUser() async {
-    return Right(_client.auth.currentUser);
-  }
-
-  @override
   Future<Either<Failure, void>> logOut() async {
     await Future.delayed(const Duration(milliseconds: 500));
     return const Right(null);
