@@ -104,7 +104,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> sendOtp({required String email}) async {
     try {
-      await supabaseClient.auth.signInWithOtp(email: email);
+      await supabaseClient.auth.resend(
+        email: email,
+        type: OtpType.signup,
+      );
     } on AuthException catch (e) {
       throw ServerException(e.message);
     } catch (e) {

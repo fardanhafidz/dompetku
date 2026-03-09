@@ -91,7 +91,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (failure) => emit(AuthFailure(failure.message)),
       (session) {
         if (session.accessToken == null) {
-          emit(AuthNeedsVerification(event.email));
+          emit(AuthNeedsVerification(event.email, timestamp: DateTime.now()));
         } else {
           emit(AuthAuthenticated(session));
         }
@@ -122,9 +122,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     SendOtpRequested event,
     Emitter<AuthState> emit,
   ) async {
-    // We don't necessarily need AuthLoading here if it's handled by a separate UI state,
-    // but for simplicity, we can just call it.
-    await _sendOtp(event.email);
+    final result = await _sendOtp(event.email);
+    result.fold(
+      (failure) => emit(AuthFailure(failure.message)),
+      (_) => emit(AuthNeedsVerification(event.email, timestamp: DateTime.now())),
+    );
   }
 
   Future<void> _onLogoutRequested(

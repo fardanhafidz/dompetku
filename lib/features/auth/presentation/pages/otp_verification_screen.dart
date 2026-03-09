@@ -77,6 +77,14 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 backgroundColor: Colors.redAccent,
               ),
             );
+          } else if (state is AuthNeedsVerification) {
+            // If we're already here and get this state again, it means OTP was resent
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Kode OTP berhasil dikirim ulang'),
+                backgroundColor: AppColors.primary,
+              ),
+            );
           }
         },
         child: SafeArea(
@@ -187,9 +195,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           }
                         : null,
                     style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     ),
                     child: Text(
                       'Kirim ulang',

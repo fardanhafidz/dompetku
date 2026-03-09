@@ -24,10 +24,11 @@ class AuthUnauthenticated extends AuthState {}
 
 class AuthNeedsVerification extends AuthState {
   final String email;
-  const AuthNeedsVerification(this.email);
+  final DateTime? timestamp;
+  const AuthNeedsVerification(this.email, {this.timestamp});
 
   @override
-  List<Object?> get props => [email];
+  List<Object?> get props => [email, timestamp];
 }
 
 class AuthFailure extends AuthState {
