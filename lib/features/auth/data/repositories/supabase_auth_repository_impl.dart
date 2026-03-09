@@ -83,6 +83,36 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, void>> sendOtp({required String email}) async {
+    try {
+      await remoteDataSource.sendOtp(email: email);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Gagal mengirim OTP'));
+    } catch (e) {
+      return const Left(ServerFailure(
+          'Terjadi kesalahan yang tidak terduga saat mengirim OTP'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, AuthSessionEntity>> verifyOtp({
+    required String email,
+    required String otpUrl,
+  }) async {
+    try {
+      final userModel =
+          await remoteDataSource.verifyOtp(email: email, otpUrl: otpUrl);
+      return Right(userModel);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Gagal memverifikasi OTP'));
+    } catch (e) {
+      return const Left(ServerFailure(
+          'Terjadi kesalahan yang tidak terduga saat verifikasi OTP'));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> logOut() async {
     try {
       await remoteDataSource.logOut();

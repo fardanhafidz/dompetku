@@ -50,6 +50,28 @@ class MockAuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, void>> sendOtp({required String email}) async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (email.contains('@')) {
+      return const Right(null);
+    }
+    return const Left(ServerFailure('Gagal mengirim OTP: Email tidak valid'));
+  }
+
+  @override
+  Future<Either<Failure, AuthSessionEntity>> verifyOtp({
+    required String email,
+    required String otpUrl, // Simulasi input kode dari User OTP link
+  }) async {
+    await Future.delayed(const Duration(seconds: 1));
+    // Simulasi jika kode mengandung "123456" sukses
+    if (otpUrl.contains('123456')) {
+      return Right(_createMockSession(email, 'Verified User'));
+    }
+    return const Left(ServerFailure('Verifikasi gagal: Kode OTP salah'));
+  }
+
+  @override
   Future<Either<Failure, void>> logOut() async {
     await Future.delayed(const Duration(milliseconds: 500));
     return const Right(null);

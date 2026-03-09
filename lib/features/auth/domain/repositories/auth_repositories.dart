@@ -18,5 +18,14 @@ abstract class AuthRepository {
 
   Future<Either<Failure, bool>> authenticateBiometric();
 
+  Future<Either<Failure, void>> sendOtp({
+    required String email,
+  });
+
+  Future<Either<Failure, AuthSessionEntity>> verifyOtp({
+    required String email,
+    required String otpUrl,
+  });
+
   Future<Either<Failure, void>> logOut();
 }

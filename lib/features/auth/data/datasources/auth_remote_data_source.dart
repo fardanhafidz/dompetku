@@ -16,6 +16,13 @@ abstract class AuthRemoteDataSource {
 
   Future<AuthSessionModel?> checkAuthStatus();
 
+  Future<void> sendOtp({required String email});
+
+  Future<AuthSessionModel> verifyOtp({
+    required String email,
+    required String otpUrl,
+  });
+
   Future<void> logOut();
 }
 
@@ -50,7 +57,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'full_name': fullName,
           'is_biometric_enabled': false,
         },
-        isBiometricEnabled: false,
       );
     } on AuthException catch (e) {
       throw ServerException(e.message);
@@ -75,6 +81,52 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
 
       // 2. Fetch data public
+      final userData = await supabaseClient
+          .from('users')
+          .select()
+          .eq('id', response.user!.id)
+          .single();
+
+      return AuthSessionModel.fromSupabase(
+        session: response.session,
+        supabaseUser: response.user,
+        userData: userData,
+        isBiometricEnabled: userData['is_biometric_enabled'] ?? false,
+      );
+    } on AuthException catch (e) {
+      throw ServerException(e.message);
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<void> sendOtp({required String email}) async {
+    try {
+      await supabaseClient.auth.signInWithOtp(email: email);
+    } on AuthException catch (e) {
+      throw ServerException(e.message);
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<AuthSessionModel> verifyOtp({
+    required String email,
+    required String otpUrl,
+  }) async {
+    try {
+      final response = await supabaseClient.auth.verifyOTP(
+        type: OtpType.magiclink,
+        token: otpUrl,
+        email: email,
+      );
+
+      if (response.user == null) {
+        throw ServerException('Verifikasi gagal, user tidak ditemukan');
+      }
+
       final userData = await supabaseClient
           .from('users')
           .select()
