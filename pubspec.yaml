@@ -52,6 +52,7 @@ dependencies:
   google_fonts: ^6.3.0
   envied: ^1.2.1
   dartz: ^0.10.1
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
