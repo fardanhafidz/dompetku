@@ -3,6 +3,10 @@ import 'package:go_router/go_router.dart';
 
 import '../features/auth/presentation/pages/login_screen.dart';
 import '../features/auth/presentation/pages/register_screen.dart';
+import '../features/auth/presentation/pages/otp_verification_screen.dart';
+import '../features/auth/presentation/pages/create_pin_screen.dart';
+import '../features/auth/presentation/pages/biometric_setup_screen.dart';
+import '../features/auth/presentation/pages/pin_login_screen.dart';
 import '../features/home/presentation/pages/home_screen.dart';
 import '../features/history/presentation/pages/history_screen.dart';
 import '../features/insights/presentation/pages/insights_screen.dart';
@@ -27,6 +31,22 @@ class AppRouter {
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/otp-verification',
+        builder: (context, state) => const OtpVerificationScreen(),
+      ),
+      GoRoute(
+        path: '/create-pin',
+        builder: (context, state) => const CreatePinScreen(),
+      ),
+      GoRoute(
+        path: '/biometric-setup',
+        builder: (context, state) => const BiometricSetupScreen(),
+      ),
+      GoRoute(
+        path: '/pin-login',
+        builder: (context, state) => const PinLoginScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
