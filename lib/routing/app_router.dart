@@ -7,18 +7,22 @@ import '../features/auth/presentation/pages/otp_verification_screen.dart';
 import '../features/auth/presentation/pages/create_pin_screen.dart';
 import '../features/auth/presentation/pages/biometric_setup_screen.dart';
 import '../features/auth/presentation/pages/pin_login_screen.dart';
-import '../features/home/presentation/pages/home_screen.dart';
-import '../features/history/presentation/pages/history_screen.dart';
-import '../features/insights/presentation/pages/insights_screen.dart';
+import '../features/transactions/presentation/pages/dashboard_page.dart';
+import '../features/transactions/presentation/pages/history_page.dart';
+import '../features/transactions/presentation/pages/insights_page.dart';
 import '../features/profile/presentation/pages/profile_screen.dart';
 import 'main_wrapper.dart';
 
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
-  static final _shellNavigatorHomeKey = GlobalKey<NavigatorState>(debugLabel: 'shellHome');
-  static final _shellNavigatorHistoryKey = GlobalKey<NavigatorState>(debugLabel: 'shellHistory');
-  static final _shellNavigatorInsightsKey = GlobalKey<NavigatorState>(debugLabel: 'shellInsights');
-  static final _shellNavigatorProfileKey = GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
+  static final _shellNavigatorDashboardKey =
+      GlobalKey<NavigatorState>(debugLabel: 'shellDashboard');
+  static final _shellNavigatorHistoryKey =
+      GlobalKey<NavigatorState>(debugLabel: 'shellHistory');
+  static final _shellNavigatorInsightsKey =
+      GlobalKey<NavigatorState>(debugLabel: 'shellInsights');
+  static final _shellNavigatorProfileKey =
+      GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
 
   static final config = GoRouter(
     initialLocation: '/login',
@@ -57,11 +61,11 @@ class AppRouter {
         },
         branches: [
           StatefulShellBranch(
-            navigatorKey: _shellNavigatorHomeKey,
+            navigatorKey: _shellNavigatorDashboardKey,
             routes: [
               GoRoute(
                 path: '/',
-                builder: (context, state) => const HomeScreen(),
+                builder: (context, state) => const DashboardPage(),
               ),
             ],
           ),
@@ -70,7 +74,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/history',
-                builder: (context, state) => const HistoryScreen(),
+                builder: (context, state) => const HistoryPage(),
               ),
             ],
           ),
@@ -79,7 +83,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/insights',
-                builder: (context, state) => const InsightsScreen(),
+                builder: (context, state) => const InsightsPage(),
               ),
             ],
           ),
