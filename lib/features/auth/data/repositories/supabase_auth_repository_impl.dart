@@ -1,5 +1,6 @@
+import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../../core/utils/result.dart';
+import '../../../../core/error/failure.dart';
 import 'auth_repository.dart';
 
 class SupabaseAuthRepositoryImpl implements AuthRepository {
@@ -8,7 +9,7 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
   SupabaseAuthRepositoryImpl(this._client);
 
   @override
-  Future<Result<User>> login({
+  Future<Either<Failure, User>> login({
     required String email,
     required String password,
   }) async {
@@ -18,19 +19,23 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
         password: password,
       );
       if (response.user != null) {
-        return Success(response.user!);
+        return Right(response.user!);
       } else {
-        return const Failure('Login failed: User is null');
+        return const Left(AuthFailure('Login failed: User is null'));
       }
     } on AuthException catch (e) {
-      return Failure(e.message);
+      String message = e.message;
+      if (message.contains('Invalid login credentials')) {
+        message = 'Email atau password salah.';
+      }
+      return Left(AuthFailure(message));
     } catch (e) {
-      return Failure(e.toString());
+      return Left(AuthFailure(e.toString()));
     }
   }
 
   @override
-  Future<Result<User>> register({
+  Future<Either<Failure, User>> register({
     required String fullName,
     required String email,
     required String password,
@@ -42,14 +47,28 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
         data: {'full_name': fullName},
       );
       if (response.user != null) {
-        return Success(response.user!);
+        return Right(response.user!);
       } else {
-        return const Failure('Registration failed: User is null');
+        return const Left(AuthFailure('Registration failed: User is null'));
       }
     } on AuthException catch (e) {
-      return Failure(e.message);
+      String message = e.message;
+      if (message.contains('User already registered')) {
+        message = 'Email sudah terdaftar.';
+      }
+      return Left(AuthFailure(message));
     } catch (e) {
-      return Failure(e.toString());
+      return Left(AuthFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, User?>> getCurrentUser() async {
+    try {
+      final user = _client.auth.currentUser;
+      return Right(user);
+    } catch (e) {
+      return Left(AuthFailure(e.toString()));
     }
   }
 

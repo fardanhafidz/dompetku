@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/utils/result.dart';
 import '../../data/repositories/auth_repository.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
@@ -18,10 +17,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthCheckRequested event,
     Emitter<AuthState> emit,
   ) async {
-    // For now, we can check if there's a current user session in Supabase if needed,
-    // but the ticket focus is on slicing UI and basic flow.
-    // For simplicity, starting as unauthenticated or based on your app's needs.
-    emit(AuthUnauthenticated());
+    final result = await _authRepository.getCurrentUser();
+    result.fold(
+      (failure) => emit(AuthUnauthenticated()),
+      (user) {
+        if (user != null) {
+          emit(AuthAuthenticated(user));
+        } else {
+          emit(AuthUnauthenticated());
+        }
+      },
+    );
   }
 
   Future<void> _onLoginRequested(
@@ -34,11 +40,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       password: event.password,
     );
 
-    if (result is Success) {
-      emit(AuthAuthenticated((result as Success).data));
-    } else {
-      emit(AuthFailure((result as Failure).message));
-    }
+    result.fold(
+      (failure) => emit(AuthFailure(failure.message)),
+      (user) => emit(AuthAuthenticated(user)),
+    );
   }
 
   Future<void> _onRegisterRequested(
@@ -52,11 +57,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       password: event.password,
     );
 
-    if (result is Success) {
-      emit(AuthAuthenticated((result as Success).data));
-    } else {
-      emit(AuthFailure((result as Failure).message));
-    }
+    result.fold(
+      (failure) => emit(AuthFailure(failure.message)),
+      (user) => emit(AuthAuthenticated(user)),
+    );
   }
 
   Future<void> _onLogoutRequested(

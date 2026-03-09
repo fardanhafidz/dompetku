@@ -84,9 +84,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     hintText: 'john@example.com',
                     prefixIcon: Icons.mail_outline,
                     keyboardType: TextInputType.emailAddress,
-                    validator: (value) => (value == null || value.isEmpty)
-                        ? 'Please enter your email'
-                        : null,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Silakan masukkan email Anda';
+                      }
+                      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                      if (!emailRegex.hasMatch(value)) {
+                        return 'Format email tidak valid';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
 
