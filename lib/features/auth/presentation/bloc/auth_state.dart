@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../domain/entities/auth_session_entity.dart';
 
 abstract class AuthState extends Equatable {
   const AuthState();
@@ -13,11 +13,11 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 class AuthAuthenticated extends AuthState {
-  final User user;
-  const AuthAuthenticated(this.user);
+  final AuthSessionEntity session;
+  const AuthAuthenticated(this.session);
 
   @override
-  List<Object?> get props => [user];
+  List<Object?> get props => [session];
 }
 
 class AuthUnauthenticated extends AuthState {}

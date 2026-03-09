@@ -1,0 +1,5 @@
+[error] Target of URI doesn't exist: 'auth_repository.dart' (C:\Users\Nafi\03-projects\02-apps\mobile\repos\dompetku\lib\features\auth\data\repositories\mock_auth_repository_impl.dart:3:8)
+[error] Classes and mixins can only implement other classes and mixins (C:\Users\Nafi\03-projects\02-apps\mobile\repos\dompetku\lib\features\auth\data\repositories\mock_auth_repository_impl.dart:7:45)
+[warning] The method doesn't override an inherited method (C:\Users\Nafi\03-projects\02-apps\mobile\repos\dompetku\lib\features\auth\data\repositories\mock_auth_repository_impl.dart:13:24)
+[warning] The method doesn't override an inherited method (C:\Users\Nafi\03-projects\02-apps\mobile\repos\dompetku\lib\features\auth\data\repositories\mock_auth_repository_impl.dart:37:24)
+[warning] The method doesn't override an inherited method (C:\Users\Nafi\03-projects\02-apps\mobile\repos\dompetku\lib\features\auth\data\repositories\mock_auth_repository_impl.dart:61:16)
