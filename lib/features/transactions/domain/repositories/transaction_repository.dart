@@ -24,6 +24,12 @@ abstract class TransactionRepository {
   // Categories
   Future<Either<Failure, List<CategoryEntity>>> getCategories();
 
+  // Summary
+  Future<Either<Failure, Map<String, double>>> getTransactionSummary({
+    DateTime? startDate,
+    DateTime? endDate,
+  });
+
   // AI OCR
   Future<Either<Failure, Map<String, dynamic>>> scanReceipt(String imagePath);
 }
