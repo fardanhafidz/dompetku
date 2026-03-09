@@ -30,39 +30,41 @@ This project follows a 'Feature-First' organization combined with 'Clean Archite
 ``` 
 lib/
 ├── core/                         # JANTUNG (Infrastructure & Global Logic)
-│   ├── database/                 # Local DB Setup (Isar/SQLite)
+│   ├── constants/                # App-wide constants
+│   ├── di/                       # Dependency Injection (GetIt)
+│   ├── entities/                 # Global Entities (UserEntity)
+│   ├── env/                      # Environment Variables (Envied)
+│   ├── errors/                   # Failure & Exception classes
+│   ├── models/                   # Global Models (UserModel)
 │   ├── network/                  # Dio & API Configuration
 │   ├── sync/                     # THE ENGINE: Sync Manager & Queue Logic
-│   ├── error/                    # Failure & Exception classes
-│   └── di/                       # Dependency Injection (GetIt)
+│   └── utils/                    # Helper / Utility classes
 │
 ├── shared/                       # TOOLKIT (UI Components & Constants)
 │   ├── theme/                    # App Theme & Colors
-│   ├── widgets/                  # Reusable UI (Buttons, TextFields)
-│   └── constants/                # App Strings & Assets
+│   └── widgets/                  # Reusable UI (Buttons, TextFields)
 │
 ├── features/                     # CAPABILITIES (The "Do" parts)
-│   ├── auth/                     # Fitur: Login & Register
-│   │   ├── data/                 # Remote Source (Supabase)
-│   │   ├── domain/               # Entity & UseCases
-│   │   └── presentation/         # Pages & Bloc
+│   ├── auth/                     # Fitur: Login, Register & OTP
+│   │   ├── data/                 # DataSources, Models, Repository Impl
+│   │   ├── domain/               # Entities, UseCases, Repository Contract
+│   │   └── presentation/         # Pages, Bloc, Widgets
 │   │
 │   ├── transactions/             # Fitur Utama: Management Keuangan
-│   │   ├── data/                 # Local & Remote DataSources
-│   │   ├── domain/               # Entity: Transaction & Category
-│   │   └── presentation/         # Layer UI (Dashboard, History, Input Form)
-│   │       ├── bloc/             # Transaction & Summary BLoC
-│   │       ├── pages/            # dashboard_page.dart, history_page.dart, form_input_page.dart
-│   │       └── widgets/          # Item cards, Chart widgets
+│   │   ├── data/                 # Local & Remote DataSources (TBD)
+│   │   ├── domain/               # Entity: Transaction & Category (TBD)
+│   │   └── presentation/         # Layer UI
+│   │       ├── bloc/             # Transaction & Summary BLoC (TBD)
+│   │       ├── pages/            # dashboard_page, history_page, insights_page, form_input_page
+│   │       └── widgets/          # Item cards, Chart widgets (TBD)
 │   │
-│   ├── receipt_scanner/          # Fitur: AI OCR (Input Helper)
-│   │   ├── data/                 # OCR API Service & Image Compression
-│   │   ├── domain/               # OCR Result Mapping Logic
-│   │   └── presentation/         # Camera & Preview Screen
+│   ├── receipt_scanner/          # Fitur: AI OCR (Input Helper) (TBD)
 │   │
 │   └── profile/                  # Fitur: User Settings & Security
 │       └── presentation/         # Profile & Biometric Toggle
 │
 ├── routing/                      # Navigation Logic (GoRouter)
+│   ├── app_router.dart           # Route definitions
+│   └── main_wrapper.dart         # Bottom Navigation wrapper
 └── main.dart                     # Entry point (Inisialisasi Core)
 ```
