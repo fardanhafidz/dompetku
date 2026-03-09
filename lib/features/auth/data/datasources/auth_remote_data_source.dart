@@ -41,21 +41,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw ServerException('Registrasi gagal, sistem tidak merespon');
       }
 
-      final publicUserResponse = await supabaseClient
-          .from('users')
-          .insert({
-            'id': response.user!.id,
-            'email': email,
-            'full_name': fullName,
-            'is_biometric_enabled': false,
-          })
-          .select()
-          .single();
-
       return AuthSessionModel.fromSupabase(
         session: response.session,
         supabaseUser: response.user,
-        userData: publicUserResponse,
+        userData: {
+          'id': response.user!.id,
+          'email': email,
+          'full_name': fullName,
+          'is_biometric_enabled': false,
+        },
         isBiometricEnabled: false,
       );
     } on AuthException catch (e) {
