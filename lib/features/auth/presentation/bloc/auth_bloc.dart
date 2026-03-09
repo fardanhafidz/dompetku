@@ -4,6 +4,8 @@ import '../../domain/usecases/check_auth_status.dart';
 import '../../domain/usecases/log_out.dart';
 import '../../domain/usecases/sign_in.dart';
 import '../../domain/usecases/sign_up.dart';
+import '../../domain/usecases/send_otp.dart';
+import '../../domain/usecases/verify_otp.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -12,20 +14,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignUpUseCase _signUp;
   final CheckAuthStatusUseCase _checkAuthStatus;
   final LogOutUseCase _logOut;
+  final SendOtpUseCase _sendOtp;
+  final VerifyOtpUseCase _verifyOtp;
 
   AuthBloc({
     required SignInUseCase signIn,
     required SignUpUseCase signUp,
     required CheckAuthStatusUseCase checkAuthStatus,
     required LogOutUseCase logOut,
+    required SendOtpUseCase sendOtp,
+    required VerifyOtpUseCase verifyOtp,
   })  : _signIn = signIn,
         _signUp = signUp,
         _checkAuthStatus = checkAuthStatus,
         _logOut = logOut,
+        _sendOtp = sendOtp,
+        _verifyOtp = verifyOtp,
         super(AuthInitial()) {
     on<AuthCheckRequested>(_onAuthCheckRequested);
     on<LoginRequested>(_onLoginRequested);
     on<RegisterRequested>(_onRegisterRequested);
+    on<SendOtpRequested>(_onSendOtpRequested);
+    on<VerifyOtpRequested>(_onVerifyOtpRequested);
     on<LogoutRequested>(_onLogoutRequested);
   }
 
@@ -79,8 +89,42 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     result.fold(
       (failure) => emit(AuthFailure(failure.message)),
+      (session) {
+        if (session.accessToken == null) {
+          emit(AuthNeedsVerification(event.email));
+        } else {
+          emit(AuthAuthenticated(session));
+        }
+      },
+    );
+  }
+
+  Future<void> _onVerifyOtpRequested(
+    VerifyOtpRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    final result = await _verifyOtp(
+      VerifyOtpParams(
+        email: event.email,
+        token: event.token,
+        type: event.type,
+      ),
+    );
+
+    result.fold(
+      (failure) => emit(AuthFailure(failure.message)),
       (session) => emit(AuthAuthenticated(session)),
     );
+  }
+
+  Future<void> _onSendOtpRequested(
+    SendOtpRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    // We don't necessarily need AuthLoading here if it's handled by a separate UI state,
+    // but for simplicity, we can just call it.
+    await _sendOtp(event.email);
   }
 
   Future<void> _onLogoutRequested(

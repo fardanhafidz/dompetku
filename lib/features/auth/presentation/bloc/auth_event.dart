@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
@@ -32,6 +33,29 @@ class RegisterRequested extends AuthEvent {
 
   @override
   List<Object?> get props => [fullName, email, password];
+}
+
+class VerifyOtpRequested extends AuthEvent {
+  final String email;
+  final String token;
+  final OtpType type;
+
+  const VerifyOtpRequested({
+    required this.email,
+    required this.token,
+    required this.type,
+  });
+
+  @override
+  List<Object?> get props => [email, token, type];
+}
+
+class SendOtpRequested extends AuthEvent {
+  final String email;
+  const SendOtpRequested(this.email);
+
+  @override
+  List<Object?> get props => [email];
 }
 
 class LogoutRequested extends AuthEvent {}

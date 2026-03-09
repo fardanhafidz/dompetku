@@ -34,7 +34,10 @@ class AppRouter {
       ),
       GoRoute(
         path: '/otp-verification',
-        builder: (context, state) => const OtpVerificationScreen(),
+        builder: (context, state) {
+          final email = state.extra as String?;
+          return OtpVerificationScreen(email: email);
+        },
       ),
       GoRoute(
         path: '/create-pin',

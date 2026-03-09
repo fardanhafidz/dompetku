@@ -20,7 +20,8 @@ abstract class AuthRemoteDataSource {
 
   Future<AuthSessionModel> verifyOtp({
     required String email,
-    required String otpUrl,
+    required String token,
+    required OtpType type,
   });
 
   Future<void> logOut();
@@ -114,12 +115,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<AuthSessionModel> verifyOtp({
     required String email,
-    required String otpUrl,
+    required String token,
+    required OtpType type,
   }) async {
     try {
       final response = await supabaseClient.auth.verifyOTP(
-        type: OtpType.magiclink,
-        token: otpUrl,
+        type: type,
+        token: token,
         email: email,
       );
 
@@ -127,17 +129,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw ServerException('Verifikasi gagal, user tidak ditemukan');
       }
 
+      // 2. Fetch data public
       final userData = await supabaseClient
           .from('users')
           .select()
           .eq('id', response.user!.id)
-          .single();
+          .maybeSingle();
 
       return AuthSessionModel.fromSupabase(
         session: response.session,
         supabaseUser: response.user,
         userData: userData,
-        isBiometricEnabled: userData['is_biometric_enabled'] ?? false,
+        isBiometricEnabled: userData?['is_biometric_enabled'] ?? false,
       );
     } on AuthException catch (e) {
       throw ServerException(e.message);

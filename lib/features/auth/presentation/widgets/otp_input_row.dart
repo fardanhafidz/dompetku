@@ -54,31 +54,32 @@ class OtpInputRow extends StatelessWidget {
                   final isFilled = index < text.length;
                   final digit = isFilled ? text[index] : '-';
 
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 6),
-                    width: 48,
-                    height: 56,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isSelected
-                            ? AppColors.primary
-                            : (isFilled
-                                ? AppColors.primary
-                                : AppColors.secondary.withValues(alpha: 0.3)),
-                        width: 1.5,
+                  return Flexible(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      height: 56,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: isSelected
+                              ? AppColors.primary
+                              : (isFilled
+                                  ? AppColors.primary
+                                  : AppColors.secondary.withValues(alpha: 0.3)),
+                          width: 1.5,
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      digit,
-                      style: GoogleFonts.manrope(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: isFilled
-                            ? AppColors.onBackground
-                            : AppColors.subtext.withValues(alpha: 0.5),
+                      child: Text(
+                        digit,
+                        style: GoogleFonts.manrope(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: isFilled
+                              ? AppColors.onBackground
+                              : AppColors.subtext.withValues(alpha: 0.5),
+                        ),
                       ),
                     ),
                   );

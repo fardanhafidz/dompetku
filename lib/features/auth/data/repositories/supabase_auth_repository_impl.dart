@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show OtpType;
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
@@ -98,11 +99,15 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, AuthSessionEntity>> verifyOtp({
     required String email,
-    required String otpUrl,
+    required String token,
+    required OtpType type,
   }) async {
     try {
-      final userModel =
-          await remoteDataSource.verifyOtp(email: email, otpUrl: otpUrl);
+      final userModel = await remoteDataSource.verifyOtp(
+        email: email,
+        token: token,
+        type: type,
+      );
       return Right(userModel);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message ?? 'Gagal memverifikasi OTP'));

@@ -12,6 +12,8 @@ import '../../features/auth/domain/usecases/check_auth_status.dart';
 import '../../features/auth/domain/usecases/log_out.dart';
 import '../../features/auth/domain/usecases/sign_in.dart';
 import '../../features/auth/domain/usecases/sign_up.dart';
+import '../../features/auth/domain/usecases/send_otp.dart';
+import '../../features/auth/domain/usecases/verify_otp.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 
 final sl = GetIt.instance;
@@ -24,6 +26,8 @@ Future<void> init() async {
       signUp: sl(),
       checkAuthStatus: sl(),
       logOut: sl(),
+      sendOtp: sl(),
+      verifyOtp: sl(),
     ),
   );
 
@@ -33,6 +37,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => CheckAuthStatusUseCase(sl()));
   sl.registerLazySingleton(() => AuthenticateBiometricUseCase(sl()));
   sl.registerLazySingleton(() => LogOutUseCase(sl()));
+  sl.registerLazySingleton(() => SendOtpUseCase(sl()));
+  sl.registerLazySingleton(() => VerifyOtpUseCase(sl()));
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show OtpType;
 import 'package:dompetku/core/errors/failures.dart';
 
 import '../entities/auth_session_entity.dart';
@@ -24,7 +25,8 @@ abstract class AuthRepository {
 
   Future<Either<Failure, AuthSessionEntity>> verifyOtp({
     required String email,
-    required String otpUrl,
+    required String token,
+    required OtpType type,
   });
 
   Future<Either<Failure, void>> logOut();

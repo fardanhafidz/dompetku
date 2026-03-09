@@ -40,6 +40,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         listener: (context, state) {
           if (state is AuthAuthenticated) {
             context.go('/');
+          } else if (state is AuthNeedsVerification) {
+            context.push('/otp-verification', extra: state.email);
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

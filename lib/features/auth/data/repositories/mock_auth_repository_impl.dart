@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/entities/user_entity.dart';
 import '../../../../core/errors/failures.dart';
@@ -61,11 +62,12 @@ class MockAuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, AuthSessionEntity>> verifyOtp({
     required String email,
-    required String otpUrl, // Simulasi input kode dari User OTP link
+    required String token,
+    required OtpType type,
   }) async {
     await Future.delayed(const Duration(seconds: 1));
     // Simulasi jika kode mengandung "123456" sukses
-    if (otpUrl.contains('123456')) {
+    if (token.contains('123456')) {
       return Right(_createMockSession(email, 'Verified User'));
     }
     return const Left(ServerFailure('Verifikasi gagal: Kode OTP salah'));
