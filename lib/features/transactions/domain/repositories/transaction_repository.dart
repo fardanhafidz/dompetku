@@ -6,9 +6,16 @@ import 'package:dompetku/features/transactions/domain/entities/category_entity.d
 abstract class TransactionRepository {
   // Transactions
   Future<Either<Failure, void>> addTransaction(TransactionEntity transaction);
-  Future<Either<Failure, List<TransactionEntity>>> getTransactions();
+
+  Future<Either<Failure, List<TransactionEntity>>> getTransactions({
+    String? categoryId,
+    DateTime? startDate,
+    DateTime? endDate,
+  });
+
   Future<Either<Failure, void>> updateTransaction(
       TransactionEntity transaction);
+
   Future<Either<Failure, void>> deleteTransaction(String id);
 
   // Sync
