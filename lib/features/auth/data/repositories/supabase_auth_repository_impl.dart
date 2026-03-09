@@ -1,60 +1,97 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../../core/utils/result.dart';
-import 'auth_repository.dart';
+import 'package:dartz/dartz.dart';
+
+import '../../../../core/errors/exceptions.dart';
+import '../../../../core/errors/failures.dart';
+import '../../domain/entities/auth_session_entity.dart';
+import '../../domain/repositories/auth_repositories.dart';
+import '../datasources/auth_local_data_source.dart';
+import '../datasources/auth_remote_data_source.dart';
 
 class SupabaseAuthRepositoryImpl implements AuthRepository {
-  final SupabaseClient _client;
+  final AuthRemoteDataSource remoteDataSource;
+  final AuthLocalDataSource localDataSource;
 
-  SupabaseAuthRepositoryImpl(this._client);
+  SupabaseAuthRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+  });
 
   @override
-  Future<Result<User>> login({
+  Future<Either<Failure, AuthSessionEntity>> signIn({
     required String email,
     required String password,
   }) async {
     try {
-      final response = await _client.auth.signInWithPassword(
+      final userModel = await remoteDataSource.signIn(
         email: email,
         password: password,
       );
-      if (response.user != null) {
-        return Success(response.user!);
-      } else {
-        return const Failure('Login failed: User is null');
-      }
-    } on AuthException catch (e) {
-      return Failure(e.message);
+      return Right(userModel);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Server error occurred'));
     } catch (e) {
-      return Failure(e.toString());
+      return const Left(
+          ServerFailure('Terjadi kesalahan yang tidak terduga saat login'));
     }
   }
 
   @override
-  Future<Result<User>> register({
+  Future<Either<Failure, AuthSessionEntity>> signUp({
     required String fullName,
     required String email,
     required String password,
   }) async {
     try {
-      final response = await _client.auth.signUp(
+      final userModel = await remoteDataSource.signUp(
+        fullName: fullName,
         email: email,
         password: password,
-        data: {'full_name': fullName},
       );
-      if (response.user != null) {
-        return Success(response.user!);
-      } else {
-        return const Failure('Registration failed: User is null');
-      }
-    } on AuthException catch (e) {
-      return Failure(e.message);
+      return Right(userModel);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Server error occurred'));
     } catch (e) {
-      return Failure(e.toString());
+      return const Left(
+          ServerFailure('Terjadi kesalahan yang tidak terduga saat register'));
     }
   }
 
   @override
-  Future<void> logout() async {
-    await _client.auth.signOut();
+  Future<Either<Failure, AuthSessionEntity?>> checkAuthStatus() async {
+    try {
+      final userModel = await remoteDataSource.checkAuthStatus();
+      return Right(userModel);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Server error occurred'));
+    } catch (e) {
+      return const Left(ServerFailure('Gagal mengecek status autentikasi'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> authenticateBiometric() async {
+    try {
+      final isSuccess = await localDataSource.authenticateBiometric();
+      return Right(isSuccess);
+    } on CacheException {
+      return const Left(
+          CacheFailure('Biometrik tidak tersedia atau gagal divalidasi'));
+    } catch (e) {
+      return const Left(
+          CacheFailure('Terjadi kesalahan saat otentikasi biometrik'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> logOut() async {
+    try {
+      await remoteDataSource.logOut();
+      await localDataSource.clearLocalData();
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Server error occurred'));
+    } catch (e) {
+      return const Left(ServerFailure('Terjadi kesalahan saat logout'));
+    }
   }
 }

@@ -1,13 +1,28 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/utils/result.dart';
-import '../../data/repositories/auth_repository.dart';
+
+import '../../domain/usecases/check_auth_status.dart';
+import '../../domain/usecases/log_out.dart';
+import '../../domain/usecases/sign_in.dart';
+import '../../domain/usecases/sign_up.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthRepository _authRepository;
+  final SignInUseCase _signIn;
+  final SignUpUseCase _signUp;
+  final CheckAuthStatusUseCase _checkAuthStatus;
+  final LogOutUseCase _logOut;
 
-  AuthBloc(this._authRepository) : super(AuthInitial()) {
+  AuthBloc({
+    required SignInUseCase signIn,
+    required SignUpUseCase signUp,
+    required CheckAuthStatusUseCase checkAuthStatus,
+    required LogOutUseCase logOut,
+  })  : _signIn = signIn,
+        _signUp = signUp,
+        _checkAuthStatus = checkAuthStatus,
+        _logOut = logOut,
+        super(AuthInitial()) {
     on<AuthCheckRequested>(_onAuthCheckRequested);
     on<LoginRequested>(_onLoginRequested);
     on<RegisterRequested>(_onRegisterRequested);
@@ -18,10 +33,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthCheckRequested event,
     Emitter<AuthState> emit,
   ) async {
-    // For now, we can check if there's a current user session in Supabase if needed,
-    // but the ticket focus is on slicing UI and basic flow.
-    // For simplicity, starting as unauthenticated or based on your app's needs.
-    emit(AuthUnauthenticated());
+    final result = await _checkAuthStatus();
+    result.fold(
+      (failure) => emit(AuthUnauthenticated()),
+      (session) {
+        if (session != null) {
+          emit(AuthAuthenticated(session));
+        } else {
+          emit(AuthUnauthenticated());
+        }
+      },
+    );
   }
 
   Future<void> _onLoginRequested(
@@ -29,16 +51,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    final result = await _authRepository.login(
-      email: event.email,
-      password: event.password,
+    final result = await _signIn(
+      SignInParams(
+        email: event.email,
+        password: event.password,
+      ),
     );
 
-    if (result is Success) {
-      emit(AuthAuthenticated((result as Success).data));
-    } else {
-      emit(AuthFailure((result as Failure).message));
-    }
+    result.fold(
+      (failure) => emit(AuthFailure(failure.message)),
+      (session) => emit(AuthAuthenticated(session)),
+    );
   }
 
   Future<void> _onRegisterRequested(
@@ -46,17 +69,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    final result = await _authRepository.register(
-      fullName: event.fullName,
-      email: event.email,
-      password: event.password,
+    final result = await _signUp(
+      SignUpParams(
+        fullName: event.fullName,
+        email: event.email,
+        password: event.password,
+      ),
     );
 
-    if (result is Success) {
-      emit(AuthAuthenticated((result as Success).data));
-    } else {
-      emit(AuthFailure((result as Failure).message));
-    }
+    result.fold(
+      (failure) => emit(AuthFailure(failure.message)),
+      (session) => emit(AuthAuthenticated(session)),
+    );
   }
 
   Future<void> _onLogoutRequested(
@@ -64,7 +88,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    await _authRepository.logout();
+    await _logOut();
     emit(AuthUnauthenticated());
   }
 }
