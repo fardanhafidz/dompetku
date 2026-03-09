@@ -29,26 +29,40 @@ This project follows a 'Feature-First' organization combined with 'Clean Archite
 
 ``` 
 lib/
-├── core/                         # Shared infrastructure and utilities
-│   ├── di/                       # Dependency Injection (GetIt)
-│   ├── errors/                   # Failures (UI) and Exceptions (Data)
-│   ├── network/                  # NetworkInfo & Dio configuration
-│   ├── theme/                    # Global AppTheme and color constants
-│   └── utils/                    # Sprint 1 Base Utilities (Result, Formatters)
-├── routing/                      # GoRouter 'Map' and route definitions
-└── src/
-    └── features/                 # Independent Vertical Slices
-        └── [feature_name]/       # (e.g., transactions, receipt_scanner)
-            ├── data/             # The 'How' (Implementation)
-            │   ├── datasources/  # Isar (Local) & Remote APIs
-            │   ├── models/       # Data mapping (DTOs)
-            │   └── repositories/ # Repository implementations
-            ├── domain/           # The 'What' (Pure Logic)
-            │   ├── entities/     # Pure Dart data objects
-            │   ├── repositories/ # Abstract repository contracts
-            │   └── usecases/     # Specific business actions
-            └── presentation/     # The 'Pixels' (UI)
-                ├── bloc/         # Logic/State orchestration
-                ├── pages/        # Main feature screens
-                └── widgets/      # Feature-specific UI components
+├── core/                         # JANTUNG (Infrastructure & Global Logic)
+│   ├── database/                 # Local DB Setup (Isar/SQLite)
+│   ├── network/                  # Dio & API Configuration
+│   ├── sync/                     # THE ENGINE: Sync Manager & Queue Logic
+│   ├── error/                    # Failure & Exception classes
+│   └── di/                       # Dependency Injection (GetIt)
+│
+├── shared/                       # TOOLKIT (UI Components & Constants)
+│   ├── theme/                    # App Theme & Colors
+│   ├── widgets/                  # Reusable UI (Buttons, TextFields)
+│   └── constants/                # App Strings & Assets
+│
+├── features/                     # CAPABILITIES (The "Do" parts)
+│   ├── auth/                     # Fitur: Login & Register
+│   │   ├── data/                 # Remote Source (Supabase)
+│   │   ├── domain/               # Entity & UseCases
+│   │   └── presentation/         # Pages & Bloc
+│   │
+│   ├── transactions/             # Fitur Utama: Management Keuangan
+│   │   ├── data/                 # Local & Remote DataSources
+│   │   ├── domain/               # Entity: Transaction & Category
+│   │   └── presentation/         # Layer UI (Dashboard, History, Input Form)
+│   │       ├── bloc/             # Transaction & Summary BLoC
+│   │       ├── pages/            # dashboard_page.dart, history_page.dart, form_input_page.dart
+│   │       └── widgets/          # Item cards, Chart widgets
+│   │
+│   ├── receipt_scanner/          # Fitur: AI OCR (Input Helper)
+│   │   ├── data/                 # OCR API Service & Image Compression
+│   │   ├── domain/               # OCR Result Mapping Logic
+│   │   └── presentation/         # Camera & Preview Screen
+│   │
+│   └── profile/                  # Fitur: User Settings & Security
+│       └── presentation/         # Profile & Biometric Toggle
+│
+├── routing/                      # Navigation Logic (GoRouter)
+└── main.dart                     # Entry point (Inisialisasi Core)
 ```
