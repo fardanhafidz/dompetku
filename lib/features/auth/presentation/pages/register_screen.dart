@@ -10,14 +10,15 @@ import '../widgets/auth_text_field.dart';
 import '../widgets/auth_primary_button.dart';
 import '../widgets/auth_logo_header.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -25,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -57,16 +59,29 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const AuthLogoHeader(
-                    title: 'Dompetku',
-                    subtitle: 'Manage your finances smarter.',
+                    title: 'Create Account',
+                    subtitle: 'Join Dompetku to manage your expenses',
+                    showLogo: true,
                   ),
                   const SizedBox(height: 48),
 
-                  // Email Input
+                  // Full Name
+                  AuthTextField(
+                    controller: _nameController,
+                    label: 'Full Name',
+                    hintText: 'John Doe',
+                    prefixIcon: Icons.person_outline,
+                    validator: (value) => (value == null || value.isEmpty)
+                        ? 'Please enter your full name'
+                        : null,
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Email
                   AuthTextField(
                     controller: _emailController,
-                    label: 'Email Address',
-                    hintText: 'Enter your email',
+                    label: 'Email',
+                    hintText: 'john@example.com',
                     prefixIcon: Icons.mail_outline,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) => (value == null || value.isEmpty)
@@ -75,11 +90,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Password Input
+                  // Password
                   AuthTextField(
                     controller: _passwordController,
                     label: 'Password',
-                    hintText: 'Enter your password',
+                    hintText: '••••••••',
                     prefixIcon: Icons.lock_outline,
                     obscureText: !_isPasswordVisible,
                     suffixIcon: IconButton(
@@ -92,39 +107,23 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
                     ),
-                    validator: (value) => (value == null || value.isEmpty)
-                        ? 'Please enter your password'
+                    validator: (value) => (value == null || value.length < 6)
+                        ? 'Password must be at least 6 characters'
                         : null,
                   ),
-                  
-                  // Forgot Password
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Forgot Password?',
-                        style: GoogleFonts.manrope(
-                          color: AppColors.onBackground,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 32),
 
-                  // Login Button
+                  // Register Button
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
                       return AuthPrimaryButton(
-                        text: 'Login',
+                        text: 'Register',
                         isLoading: state is AuthLoading,
-                        suffixIcon: const Icon(Icons.arrow_forward, size: 20),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             context.read<AuthBloc>().add(
-                                  LoginRequested(
+                                  RegisterRequested(
+                                    fullName: _nameController.text,
                                     email: _emailController.text,
                                     password: _passwordController.text,
                                   ),
@@ -146,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           'Or continue with',
                           style: GoogleFonts.manrope(
                             color: AppColors.subtext,
-                            fontSize: 12,
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -189,27 +188,27 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 48),
 
                   // Footer
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Don\'t have an account? ',
+                        'Already have an account? ',
                         style: GoogleFonts.manrope(
                           color: AppColors.subtext,
-                          fontSize: 14,
+                          fontSize: 15,
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => context.push('/register'),
+                        onTap: () => context.pop(),
                         child: Text(
-                          'Sign up',
+                          'Login',
                           style: GoogleFonts.manrope(
-                            color: AppColors.onBackground,
+                            color: AppColors.primary,
                             fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                            fontSize: 15,
                           ),
                         ),
                       ),

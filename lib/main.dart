@@ -4,6 +4,8 @@ import 'routing/app_router.dart';
 import 'shared/theme/app_theme.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'core/di/injection_container.dart' as di;
 
 void main() async {
@@ -16,7 +18,12 @@ void main() async {
 
   await di.init();
 
-  runApp(const MyApp());
+  runApp(
+    BlocProvider(
+      create: (context) => di.sl<AuthBloc>(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

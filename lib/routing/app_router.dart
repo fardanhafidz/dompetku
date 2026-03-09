@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/auth/presentation/pages/login_screen.dart';
+import '../features/auth/presentation/pages/register_screen.dart';
 import '../features/home/presentation/pages/home_screen.dart';
 import '../features/history/presentation/pages/history_screen.dart';
 import '../features/insights/presentation/pages/insights_screen.dart';
@@ -16,12 +17,16 @@ class AppRouter {
   static final _shellNavigatorProfileKey = GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
 
   static final config = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/login',
     navigatorKey: _rootNavigatorKey,
     routes: [
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
