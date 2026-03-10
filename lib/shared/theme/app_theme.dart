@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
+import 'app_design_system.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
@@ -32,7 +33,7 @@ class AppTheme {
         elevation: 0,
         margin: const EdgeInsets.symmetric(vertical: 8),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: AppRadius.xLarge,
         ),
       ),
 

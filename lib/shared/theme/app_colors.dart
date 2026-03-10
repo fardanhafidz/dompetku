@@ -13,4 +13,8 @@ class AppColors {
   static const Color onPrimary = Colors.white;
   static const Color onBackground = Color(0xFF1B4332);
   static const Color subtext = Color(0xFF6B7280);
+
+  // Specific Design Tokens
+  static const Color accentGreen = Color(0xFF2D4F41);
+  static const Color neutralGrey = Color(0xFFF0F2F1);
 }
