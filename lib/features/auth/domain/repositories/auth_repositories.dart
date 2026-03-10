@@ -32,9 +32,9 @@ abstract class AuthRepository {
   Future<Either<Failure, void>> logOut();
   Future<Either<Failure, AuthSessionEntity?>> getCurrentUser();
 
-  Future<Either<Failure, void>> savePin({required String pin});
-  Future<Either<Failure, String?>> getPin();
-  Future<Either<Failure, bool>> hasPin();
+  Future<Either<Failure, void>> savePin({required String pin, required String email});
+  Future<Either<Failure, String?>> getPin(String email);
+  Future<Either<Failure, bool>> hasPin(String email);
 
   Future<Either<Failure, void>> setBiometricEnabled(bool isEnabled);
   Future<Either<Failure, bool>> getBiometricEnabled();

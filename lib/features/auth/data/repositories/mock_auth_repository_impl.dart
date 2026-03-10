@@ -85,19 +85,20 @@ class MockAuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> savePin({required String pin}) async {
+  Future<Either<Failure, void>> savePin(
+      {required String pin, required String email}) async {
     await Future.delayed(const Duration(milliseconds: 500));
     return const Right(null);
   }
 
   @override
-  Future<Either<Failure, String?>> getPin() async {
+  Future<Either<Failure, String?>> getPin(String email) async {
     await Future.delayed(const Duration(milliseconds: 500));
     return const Right('123456');
   }
 
   @override
-  Future<Either<Failure, bool>> hasPin() async {
+  Future<Either<Failure, bool>> hasPin(String email) async {
     await Future.delayed(const Duration(milliseconds: 500));
     return const Right(true);
   }

@@ -10,10 +10,10 @@ abstract class AuthLocalDataSource {
   Future<bool> authenticateBiometric();
   Future<void> setBiometricEnabled(bool isEnabled);
   Future<bool> getBiometricEnabled();
-  Future<void> savePin(String pin);
-  Future<String?> getPin();
-  Future<bool> hasPin();
-  Future<void> clearPin();
+  Future<void> savePin(String pin, String email);
+  Future<String?> getPin(String email);
+  Future<bool> hasPin(String email);
+  Future<void> clearPin(String email);
   Future<void> clearLocalData();
 }
 
@@ -27,6 +27,8 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     required this.sharedPreferences,
     required this.secureStorage,
   });
+
+  String _getPinKey(String email) => 'USER_PIN_KEY_$email';
 
   @override
   Future<bool> authenticateBiometric() async {
@@ -69,27 +71,27 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
-  Future<void> savePin(String pin) async {
+  Future<void> savePin(String pin, String email) async {
     try {
-      await secureStorage.write(key: kUserPinKey, value: pin);
+      await secureStorage.write(key: _getPinKey(email), value: pin);
     } catch (e) {
       throw CacheException();
     }
   }
 
   @override
-  Future<String?> getPin() async {
+  Future<String?> getPin(String email) async {
     try {
-      return await secureStorage.read(key: kUserPinKey);
+      return await secureStorage.read(key: _getPinKey(email));
     } catch (e) {
       throw CacheException();
     }
   }
 
   @override
-  Future<bool> hasPin() async {
+  Future<bool> hasPin(String email) async {
     try {
-      final pin = await secureStorage.read(key: kUserPinKey);
+      final pin = await secureStorage.read(key: _getPinKey(email));
       return pin != null && pin.isNotEmpty;
     } catch (e) {
       throw CacheException();
@@ -97,9 +99,9 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
-  Future<void> clearPin() async {
+  Future<void> clearPin(String email) async {
     try {
-      await secureStorage.delete(key: kUserPinKey);
+      await secureStorage.delete(key: _getPinKey(email));
     } catch (e) {
       throw CacheException();
     }
@@ -109,7 +111,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   Future<void> clearLocalData() async {
     try {
       await sharedPreferences.remove(kBiometricEnabledKey);
-      await secureStorage.delete(key: kUserPinKey);
+      await secureStorage.deleteAll();
     } catch (e) {
       throw CacheException();
     }

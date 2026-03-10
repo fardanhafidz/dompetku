@@ -29,7 +29,7 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
         email: email,
         password: password,
       );
-      final hasPin = await localDataSource.hasPin();
+      final hasPin = await localDataSource.hasPin(email);
       return Right(AuthSessionModel(
         user: userModel.user as UserModel,
         isBiometricEnabled: userModel.isBiometricEnabled,
@@ -56,7 +56,7 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
         email: email,
         password: password,
       );
-      final hasPin = await localDataSource.hasPin();
+      final hasPin = await localDataSource.hasPin(email);
       return Right(AuthSessionModel(
         user: userModel.user as UserModel,
         isBiometricEnabled: userModel.isBiometricEnabled,
@@ -77,7 +77,7 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
       final userModel = await remoteDataSource.checkAuthStatus();
       if (userModel == null) return const Right(null);
 
-      final hasPin = await localDataSource.hasPin();
+      final hasPin = await localDataSource.hasPin(userModel.user.email);
       return Right(AuthSessionModel(
         user: userModel.user as UserModel,
         isBiometricEnabled: userModel.isBiometricEnabled,
@@ -130,7 +130,7 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
         token: token,
         type: type,
       );
-      final hasPin = await localDataSource.hasPin();
+      final hasPin = await localDataSource.hasPin(email);
       return Right(AuthSessionModel(
         user: userModel.user as UserModel,
         isBiometricEnabled: userModel.isBiometricEnabled,
@@ -159,9 +159,10 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> savePin({required String pin}) async {
+  Future<Either<Failure, void>> savePin(
+      {required String pin, required String email}) async {
     try {
-      await localDataSource.savePin(pin);
+      await localDataSource.savePin(pin, email);
       return const Right(null);
     } catch (e) {
       return const Left(CacheFailure('Gagal menyimpan PIN'));
@@ -169,9 +170,9 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, String?>> getPin() async {
+  Future<Either<Failure, String?>> getPin(String email) async {
     try {
-      final pin = await localDataSource.getPin();
+      final pin = await localDataSource.getPin(email);
       return Right(pin);
     } catch (e) {
       return const Left(CacheFailure('Gagal mengambil PIN'));
@@ -179,9 +180,9 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> hasPin() async {
+  Future<Either<Failure, bool>> hasPin(String email) async {
     try {
-      final hasPin = await localDataSource.hasPin();
+      final hasPin = await localDataSource.hasPin(email);
       return Right(hasPin);
     } catch (e) {
       return const Left(CacheFailure('Gagal mengecek status PIN'));

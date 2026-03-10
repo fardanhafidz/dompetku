@@ -7,8 +7,8 @@ class SavePinUseCase {
 
   SavePinUseCase(this.repository);
 
-  Future<Either<Failure, void>> call(String pin) {
-    return repository.savePin(pin: pin);
+  Future<Either<Failure, void>> call(String pin, String email) {
+    return repository.savePin(pin: pin, email: email);
   }
 }
 
@@ -17,8 +17,8 @@ class GetPinUseCase {
 
   GetPinUseCase(this.repository);
 
-  Future<Either<Failure, String?>> call() {
-    return repository.getPin();
+  Future<Either<Failure, String?>> call(String email) {
+    return repository.getPin(email);
   }
 }
 
@@ -27,7 +27,7 @@ class HasPinUseCase {
 
   HasPinUseCase(this.repository);
 
-  Future<Either<Failure, bool>> call() {
-    return repository.hasPin();
+  Future<Either<Failure, bool>> call(String email) {
+    return repository.hasPin(email);
   }
 }

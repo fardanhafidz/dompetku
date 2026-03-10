@@ -22,7 +22,7 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // Bloc
-  sl.registerFactory(
+  sl.registerLazySingleton(
     () => AuthBloc(
       signIn: sl(),
       signUp: sl(),

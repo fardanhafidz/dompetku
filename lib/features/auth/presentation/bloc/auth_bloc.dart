@@ -163,7 +163,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     final currentState = state;
     if (currentState is AuthAuthenticated) {
-      final pinResult = await _getPin();
+      final email = currentState.session.user.email;
+      final pinResult = await _getPin(email);
       pinResult.fold(
         (failure) => emit(AuthFailure(failure.message)),
         (storedPin) {
@@ -191,19 +192,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     SavePinRequested event,
     Emitter<AuthState> emit,
   ) async {
-    final result = await _savePin(event.pin);
     final currentState = state;
-    result.fold(
-      (failure) => emit(AuthFailure(failure.message)),
-      (_) {
-        if (currentState is AuthAuthenticated) {
+    if (currentState is AuthAuthenticated) {
+      final email = currentState.session.user.email;
+      final result = await _savePin(event.pin, email);
+      result.fold(
+        (failure) => emit(AuthFailure(failure.message)),
+        (_) {
           emit(AuthAuthenticated(
             currentState.session.copyWith(hasPin: true),
             isLocked: false,
           ));
-        }
-      },
-    );
+        },
+      );
+    }
   }
 
   void _onAppLockTriggered(
