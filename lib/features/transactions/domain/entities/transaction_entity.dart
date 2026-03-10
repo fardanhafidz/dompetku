@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'category_entity.dart';
 
-enum TransactionInputSource { manual, ocr, ai_agent }
+enum TransactionInputSource { manual, ocr, agent }
 
 class TransactionEntity extends Equatable {
   final String id;
