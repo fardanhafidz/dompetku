@@ -88,7 +88,7 @@ class BiometricSetupScreen extends StatelessWidget {
                 text: 'Register Fingerprint',
                 onPressed: () {
                   // Handle Fingerprint registration
-                  // context.go('/home');
+                  context.go('/create-pin');
                 },
               ),
               const SizedBox(height: 16),
@@ -99,7 +99,7 @@ class BiometricSetupScreen extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: () {
                     // Skip biometric setup
-                    // context.go('/home');
+                    context.go('/create-pin');
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.subtext,

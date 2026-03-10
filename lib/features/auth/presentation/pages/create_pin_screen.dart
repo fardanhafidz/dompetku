@@ -23,9 +23,9 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
       });
       if (_pin.length == 6) {
         // Handle PIN creation complete logic here
-        // Future.delayed(const Duration(milliseconds: 300), () {
-        //   context.go('/biometric-setup');
-        // });
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (mounted) context.go('/');
+        });
       }
     }
   }

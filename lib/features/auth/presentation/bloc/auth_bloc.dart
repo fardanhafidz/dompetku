@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/usecases/check_auth_status.dart';
@@ -122,10 +123,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     SendOtpRequested event,
     Emitter<AuthState> emit,
   ) async {
-    final result = await _sendOtp(event.email);
+    emit(AuthLoading());
+    final result = await _sendOtp(SendOtpParams(email: event.email));
     result.fold(
-      (failure) => emit(AuthFailure(failure.message)),
-      (_) => emit(AuthNeedsVerification(event.email, timestamp: DateTime.now())),
+      (failure) {
+        debugPrint('SendOtp Failure: ${failure.message}');
+        emit(AuthFailure(failure.message));
+      },
+      (_) {
+        debugPrint('SendOtp Success for ${event.email}');
+        emit(AuthNeedsVerification(event.email, timestamp: DateTime.now()));
+      },
     );
   }
 

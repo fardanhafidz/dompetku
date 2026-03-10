@@ -79,6 +79,11 @@ class MockAuthRepositoryImpl implements AuthRepository {
     return const Right(null);
   }
 
+  @override
+  Future<Either<Failure, AuthSessionEntity?>> getCurrentUser() async {
+    return checkAuthStatus();
+  }
+
   AuthSessionEntity _createMockSession(String email, String fullName) {
     return AuthSessionEntity(
       user: UserEntity(

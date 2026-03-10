@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/auth_session_model.dart';
 import '../../../../core/errors/exceptions.dart';
@@ -39,11 +40,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String password,
   }) async {
     try {
+      debugPrint('Supabase SignUp triggered for $email');
       final response = await supabaseClient.auth.signUp(
         email: email,
         password: password,
         data: {'full_name': fullName},
       );
+      debugPrint('Supabase SignUp response: user=${response.user?.id}, session=${response.session != null ? "exists" : "null"}');
 
       if (response.user == null) {
         throw ServerException('Registrasi gagal, sistem tidak merespon');
@@ -104,6 +107,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> sendOtp({required String email}) async {
     try {
+      debugPrint('Supabase Resend triggered for $email with type: OtpType.signup');
       await supabaseClient.auth.resend(
         email: email,
         type: OtpType.signup,

@@ -16,9 +16,6 @@ import '../../features/auth/domain/usecases/send_otp.dart';
 import '../../features/auth/domain/usecases/verify_otp.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 
-import '../../features/auth/domain/usecases/send_otp.dart';
-import '../../features/auth/domain/usecases/verify_otp.dart';
-
 final sl = GetIt.instance;
 
 Future<void> init() async {

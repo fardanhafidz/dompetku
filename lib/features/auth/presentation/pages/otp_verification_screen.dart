@@ -69,7 +69,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            context.go('/create-pin');
+            context.go('/biometric-setup');
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -78,7 +78,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               ),
             );
           } else if (state is AuthNeedsVerification) {
-            // If we're already here and get this state again, it means OTP was resent
+            // Success feedback for resend
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Kode OTP berhasil dikirim ulang'),
@@ -185,28 +185,42 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(
-                    onPressed: _secondsRemaining == 0
-                        ? () {
-                            context
-                                .read<AuthBloc>()
-                                .add(SendOtpRequested(widget.email ?? ''));
-                            _startTimer();
-                          }
-                        : null,
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    ),
-                    child: Text(
-                      'Kirim ulang',
-                      style: GoogleFonts.manrope(
-                        color: _secondsRemaining == 0
-                            ? AppColors.primary
-                            : AppColors.subtext.withValues(alpha: 0.5),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      final isLoading = state is AuthLoading;
+                      return TextButton(
+                        onPressed: (_secondsRemaining == 0 && !isLoading)
+                            ? () {
+                                context
+                                    .read<AuthBloc>()
+                                    .add(SendOtpRequested(widget.email ?? ''));
+                                _startTimer();
+                              }
+                            : null,
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        ),
+                        child: isLoading
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                                ),
+                              )
+                            : Text(
+                                'Kirim ulang',
+                                style: GoogleFonts.manrope(
+                                  color: _secondsRemaining == 0
+                                      ? AppColors.primary
+                                      : AppColors.subtext.withValues(alpha: 0.5),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                      );
+                    },
                   ),
                   const SizedBox(width: 8),
                   Text(

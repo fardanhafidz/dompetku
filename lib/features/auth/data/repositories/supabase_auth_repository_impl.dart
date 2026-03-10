@@ -31,8 +31,7 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message ?? 'Server error occurred'));
     } catch (e) {
-      return const Left(
-          ServerFailure('Terjadi kesalahan yang tidak terduga saat login'));
+      return Left(ServerFailure('Terjadi kesalahan yang tidak terduga saat login: $e'));
     }
   }
 
@@ -52,8 +51,7 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message ?? 'Server error occurred'));
     } catch (e) {
-      return const Left(
-          ServerFailure('Terjadi kesalahan yang tidak terduga saat register'));
+      return Left(ServerFailure('Terjadi kesalahan yang tidak terduga saat register: $e'));
     }
   }
 
@@ -128,5 +126,10 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       return const Left(ServerFailure('Terjadi kesalahan saat logout'));
     }
+  }
+
+  @override
+  Future<Either<Failure, AuthSessionEntity?>> getCurrentUser() async {
+    return checkAuthStatus();
   }
 }
