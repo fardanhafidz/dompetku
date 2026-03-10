@@ -60,4 +60,24 @@ class SendOtpRequested extends AuthEvent {
 
 class LogoutRequested extends AuthEvent {}
 
+class AppLockVerificationRequested extends AuthEvent {
+  final String pin;
+  const AppLockVerificationRequested(this.pin);
+
+  @override
+  List<Object?> get props => [pin];
+}
+
+class AppLockBypassed extends AuthEvent {}
+
+class SavePinRequested extends AuthEvent {
+  final String pin;
+  const SavePinRequested(this.pin);
+
+  @override
+  List<Object?> get props => [pin];
+}
+
 class BiometricAuthRequested extends AuthEvent {}
+
+class AppLockTriggered extends AuthEvent {}

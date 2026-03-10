@@ -7,6 +7,8 @@ import '../../domain/entities/auth_session_entity.dart';
 import '../../domain/repositories/auth_repositories.dart';
 import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
+import '../models/auth_session_model.dart';
+import '../../../../core/models/user_model.dart';
 
 class SupabaseAuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -27,11 +29,18 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
         email: email,
         password: password,
       );
-      return Right(userModel);
+      final hasPin = await localDataSource.hasPin();
+      return Right(AuthSessionModel(
+        user: userModel.user as UserModel,
+        isBiometricEnabled: userModel.isBiometricEnabled,
+        hasPin: hasPin,
+        accessToken: userModel.accessToken,
+      ));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message ?? 'Server error occurred'));
     } catch (e) {
-      return Left(ServerFailure('Terjadi kesalahan yang tidak terduga saat login: $e'));
+      return Left(
+          ServerFailure('Terjadi kesalahan yang tidak terduga saat login: $e'));
     }
   }
 
@@ -47,11 +56,18 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
         email: email,
         password: password,
       );
-      return Right(userModel);
+      final hasPin = await localDataSource.hasPin();
+      return Right(AuthSessionModel(
+        user: userModel.user as UserModel,
+        isBiometricEnabled: userModel.isBiometricEnabled,
+        hasPin: hasPin,
+        accessToken: userModel.accessToken,
+      ));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message ?? 'Server error occurred'));
     } catch (e) {
-      return Left(ServerFailure('Terjadi kesalahan yang tidak terduga saat register: $e'));
+      return Left(ServerFailure(
+          'Terjadi kesalahan yang tidak terduga saat register: $e'));
     }
   }
 
@@ -59,7 +75,15 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, AuthSessionEntity?>> checkAuthStatus() async {
     try {
       final userModel = await remoteDataSource.checkAuthStatus();
-      return Right(userModel);
+      if (userModel == null) return const Right(null);
+
+      final hasPin = await localDataSource.hasPin();
+      return Right(AuthSessionModel(
+        user: userModel.user as UserModel,
+        isBiometricEnabled: userModel.isBiometricEnabled,
+        hasPin: hasPin,
+        accessToken: userModel.accessToken,
+      ));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message ?? 'Server error occurred'));
     } catch (e) {
@@ -106,7 +130,13 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
         token: token,
         type: type,
       );
-      return Right(userModel);
+      final hasPin = await localDataSource.hasPin();
+      return Right(AuthSessionModel(
+        user: userModel.user as UserModel,
+        isBiometricEnabled: userModel.isBiometricEnabled,
+        hasPin: hasPin,
+        accessToken: userModel.accessToken,
+      ));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message ?? 'Gagal memverifikasi OTP'));
     } catch (e) {
@@ -129,7 +159,57 @@ class SupabaseAuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, void>> savePin({required String pin}) async {
+    try {
+      await localDataSource.savePin(pin);
+      return const Right(null);
+    } catch (e) {
+      return const Left(CacheFailure('Gagal menyimpan PIN'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String?>> getPin() async {
+    try {
+      final pin = await localDataSource.getPin();
+      return Right(pin);
+    } catch (e) {
+      return const Left(CacheFailure('Gagal mengambil PIN'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> hasPin() async {
+    try {
+      final hasPin = await localDataSource.hasPin();
+      return Right(hasPin);
+    } catch (e) {
+      return const Left(CacheFailure('Gagal mengecek status PIN'));
+    }
+  }
+
+  @override
   Future<Either<Failure, AuthSessionEntity?>> getCurrentUser() async {
     return checkAuthStatus();
+  }
+
+  @override
+  Future<Either<Failure, void>> setBiometricEnabled(bool isEnabled) async {
+    try {
+      await localDataSource.setBiometricEnabled(isEnabled);
+      return const Right(null);
+    } catch (e) {
+      return const Left(CacheFailure('Gagal menyimpan preferensi biometrik'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> getBiometricEnabled() async {
+    try {
+      final isEnabled = await localDataSource.getBiometricEnabled();
+      return Right(isEnabled);
+    } catch (e) {
+      return const Left(CacheFailure('Gagal mengambil preferensi biometrik'));
+    }
   }
 }

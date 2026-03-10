@@ -7,6 +7,7 @@ import '../../domain/usecases/sign_in.dart';
 import '../../domain/usecases/sign_up.dart';
 import '../../domain/usecases/send_otp.dart';
 import '../../domain/usecases/verify_otp.dart';
+import '../../domain/usecases/pin_use_cases.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -17,6 +18,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LogOutUseCase _logOut;
   final SendOtpUseCase _sendOtp;
   final VerifyOtpUseCase _verifyOtp;
+  final SavePinUseCase _savePin;
+  final GetPinUseCase _getPin;
 
   AuthBloc({
     required SignInUseCase signIn,
@@ -25,12 +28,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required LogOutUseCase logOut,
     required SendOtpUseCase sendOtp,
     required VerifyOtpUseCase verifyOtp,
+    required SavePinUseCase savePin,
+    required GetPinUseCase getPin,
   })  : _signIn = signIn,
         _signUp = signUp,
         _checkAuthStatus = checkAuthStatus,
         _logOut = logOut,
         _sendOtp = sendOtp,
         _verifyOtp = verifyOtp,
+        _savePin = savePin,
+        _getPin = getPin,
         super(AuthInitial()) {
     on<AuthCheckRequested>(_onAuthCheckRequested);
     on<LoginRequested>(_onLoginRequested);
@@ -38,6 +45,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SendOtpRequested>(_onSendOtpRequested);
     on<VerifyOtpRequested>(_onVerifyOtpRequested);
     on<LogoutRequested>(_onLogoutRequested);
+    on<AppLockVerificationRequested>(_onAppLockVerificationRequested);
+    on<AppLockBypassed>(_onAppLockBypassed);
+    on<SavePinRequested>(_onSavePinRequested);
+    on<AppLockTriggered>(_onAppLockTriggered);
   }
 
   Future<void> _onAuthCheckRequested(
@@ -144,5 +155,64 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     await _logOut();
     emit(AuthUnauthenticated());
+  }
+
+  Future<void> _onAppLockVerificationRequested(
+    AppLockVerificationRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is AuthAuthenticated) {
+      final pinResult = await _getPin();
+      pinResult.fold(
+        (failure) => emit(AuthFailure(failure.message)),
+        (storedPin) {
+          if (storedPin == event.pin) {
+            emit(currentState.copyWith(isLocked: false));
+          } else {
+            emit(const AuthFailure('PIN yang Anda masukkan salah'));
+          }
+        },
+      );
+    }
+  }
+
+  Future<void> _onAppLockBypassed(
+    AppLockBypassed event,
+    Emitter<AuthState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is AuthAuthenticated) {
+      emit(currentState.copyWith(isLocked: false));
+    }
+  }
+
+  Future<void> _onSavePinRequested(
+    SavePinRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    final result = await _savePin(event.pin);
+    final currentState = state;
+    result.fold(
+      (failure) => emit(AuthFailure(failure.message)),
+      (_) {
+        if (currentState is AuthAuthenticated) {
+          emit(AuthAuthenticated(
+            currentState.session.copyWith(hasPin: true),
+            isLocked: false,
+          ));
+        }
+      },
+    );
+  }
+
+  void _onAppLockTriggered(
+    AppLockTriggered event,
+    Emitter<AuthState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is AuthAuthenticated) {
+      emit(currentState.copyWith(isLocked: true));
+    }
   }
 }

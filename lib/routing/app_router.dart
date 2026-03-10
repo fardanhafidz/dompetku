@@ -11,7 +11,29 @@ import '../features/transactions/presentation/pages/dashboard_page.dart';
 import '../features/transactions/presentation/pages/history_page.dart';
 import '../features/transactions/presentation/pages/insights_page.dart';
 import '../features/profile/presentation/pages/profile_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../features/auth/presentation/bloc/auth_bloc.dart';
+import '../features/auth/presentation/bloc/auth_state.dart';
+import '../core/di/injection_container.dart';
+import 'dart:async';
 import 'main_wrapper.dart';
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen(
+          (dynamic _) => notifyListeners(),
+        );
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
 
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -27,6 +49,42 @@ class AppRouter {
   static final config = GoRouter(
     initialLocation: '/login',
     navigatorKey: _rootNavigatorKey,
+    refreshListenable: GoRouterRefreshStream(sl<AuthBloc>().stream),
+    redirect: (context, state) {
+      final authState = context.read<AuthBloc>().state;
+      final bool loggingIn = state.matchedLocation == '/login' ||
+          state.matchedLocation == '/register' ||
+          state.matchedLocation == '/otp-verification';
+
+      if (authState is AuthUnauthenticated) {
+        return loggingIn ? null : '/login';
+      }
+
+      if (authState is AuthAuthenticated) {
+        final session = authState.session;
+
+        // 1. Check for Enrollment (PIN Setup)
+        if (!session.hasPin) {
+          final isInSetup = state.matchedLocation == '/biometric-setup' ||
+              state.matchedLocation == '/create-pin';
+          return isInSetup ? null : '/biometric-setup';
+        }
+
+        // 2. Check for App Lock
+        if (authState.isLocked) {
+          return state.matchedLocation == '/pin-login' ? null : '/pin-login';
+        }
+
+        // 3. Authenticated and Unlocked
+        if (loggingIn || state.matchedLocation == '/pin-login') {
+          return '/';
+        }
+
+        return null;
+      }
+
+      return null;
+    },
     routes: [
       GoRoute(
         path: '/login',

@@ -84,6 +84,36 @@ class MockAuthRepositoryImpl implements AuthRepository {
     return checkAuthStatus();
   }
 
+  @override
+  Future<Either<Failure, void>> savePin({required String pin}) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return const Right(null);
+  }
+
+  @override
+  Future<Either<Failure, String?>> getPin() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return const Right('123456');
+  }
+
+  @override
+  Future<Either<Failure, bool>> hasPin() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return const Right(true);
+  }
+
+  @override
+  Future<Either<Failure, void>> setBiometricEnabled(bool isEnabled) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return const Right(null);
+  }
+
+  @override
+  Future<Either<Failure, bool>> getBiometricEnabled() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return const Right(true);
+  }
+
   AuthSessionEntity _createMockSession(String email, String fullName) {
     return AuthSessionEntity(
       user: UserEntity(
@@ -93,6 +123,7 @@ class MockAuthRepositoryImpl implements AuthRepository {
         createdAt: DateTime.now(),
       ),
       isBiometricEnabled: false,
+      hasPin: true,
       accessToken: 'mock-jwt-token-abcd',
     );
   }

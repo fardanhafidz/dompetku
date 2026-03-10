@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:dompetku/features/auth/domain/repositories/auth_repositories.dart';
+import 'package:dompetku/core/di/injection_container.dart';
 import '../../../../shared/theme/app_colors.dart';
 import '../widgets/auth_primary_button.dart';
 
@@ -86,9 +88,25 @@ class BiometricSetupScreen extends StatelessWidget {
               // Primary Button
               AuthPrimaryButton(
                 text: 'Register Fingerprint',
-                onPressed: () {
-                  // Handle Fingerprint registration
-                  context.go('/create-pin');
+                onPressed: () async {
+                  final authRepository = sl<AuthRepository>();
+                  final result = await authRepository.authenticateBiometric();
+
+                  result.fold(
+                    (failure) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(failure.message)),
+                      );
+                    },
+                    (isSuccess) async {
+                      if (isSuccess) {
+                        await authRepository.setBiometricEnabled(true);
+                        if (context.mounted) {
+                          context.go('/create-pin');
+                        }
+                      }
+                    },
+                  );
                 },
               ),
               const SizedBox(height: 16),
@@ -103,7 +121,8 @@ class BiometricSetupScreen extends StatelessWidget {
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.subtext,
-                    side: BorderSide(color: AppColors.subtext.withValues(alpha: 0.3)),
+                    side: BorderSide(
+                        color: AppColors.subtext.withValues(alpha: 0.3)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),

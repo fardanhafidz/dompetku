@@ -6,6 +6,7 @@ class AuthSessionModel extends AuthSessionEntity {
   const AuthSessionModel({
     required UserModel super.user,
     required super.isBiometricEnabled,
+    super.hasPin = false,
     super.accessToken,
   });
 
@@ -31,6 +32,7 @@ class AuthSessionModel extends AuthSessionEntity {
     return AuthSessionModel(
       user: userModel,
       isBiometricEnabled: isBiometricEnabled,
+      hasPin: false, // Default will be updated by repo
       accessToken: session?.accessToken,
     );
   }

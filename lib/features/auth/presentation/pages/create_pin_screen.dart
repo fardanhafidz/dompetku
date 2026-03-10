@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:dompetku/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:dompetku/features/auth/presentation/bloc/auth_event.dart';
 
 import '../../../../shared/theme/app_colors.dart';
 import '../widgets/numeric_keypad.dart';
@@ -22,9 +25,16 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
         _pin += digit;
       });
       if (_pin.length == 6) {
-        // Handle PIN creation complete logic here
-        Future.delayed(const Duration(milliseconds: 300), () {
-          if (mounted) context.go('/');
+        // Save PIN
+        Future.delayed(const Duration(milliseconds: 300), () async {
+          if (mounted) {
+            final authBloc = context.read<AuthBloc>();
+            // Since we don't have a specific event for saving PIN yet (we could add one),
+            // I'll call the repository directly or add a new event.
+            // Let's add SavePinRequested to AuthEvent.
+            authBloc.add(SavePinRequested(_pin));
+            context.go('/');
+          }
         });
       }
     }

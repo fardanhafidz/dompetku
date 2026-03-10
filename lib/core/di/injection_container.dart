@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,7 @@ import '../../features/auth/domain/usecases/sign_in.dart';
 import '../../features/auth/domain/usecases/sign_up.dart';
 import '../../features/auth/domain/usecases/send_otp.dart';
 import '../../features/auth/domain/usecases/verify_otp.dart';
+import '../../features/auth/domain/usecases/pin_use_cases.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 
 final sl = GetIt.instance;
@@ -28,6 +30,8 @@ Future<void> init() async {
       logOut: sl(),
       sendOtp: sl(),
       verifyOtp: sl(),
+      savePin: sl(),
+      getPin: sl(),
     ),
   );
 
@@ -39,6 +43,9 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LogOutUseCase(sl()));
   sl.registerLazySingleton(() => SendOtpUseCase(sl()));
   sl.registerLazySingleton(() => VerifyOtpUseCase(sl()));
+  sl.registerLazySingleton(() => SavePinUseCase(sl()));
+  sl.registerLazySingleton(() => GetPinUseCase(sl()));
+  sl.registerLazySingleton(() => HasPinUseCase(sl()));
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
@@ -56,12 +63,14 @@ Future<void> init() async {
     () => AuthLocalDataSourceImpl(
       localAuth: sl(),
       sharedPreferences: sl(),
+      secureStorage: sl(),
     ),
   );
 
   // External
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton(() => const FlutterSecureStorage());
   sl.registerLazySingleton(() => Supabase.instance.client);
   sl.registerLazySingleton(() => LocalAuthentication());
 }
