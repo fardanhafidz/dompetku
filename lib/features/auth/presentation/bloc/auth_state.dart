@@ -15,18 +15,23 @@ class AuthLoading extends AuthState {}
 class AuthAuthenticated extends AuthState {
   final AuthSessionEntity session;
   final bool isLocked;
-  const AuthAuthenticated(this.session, {this.isLocked = true});
+  final String? error;
+  const AuthAuthenticated(this.session,
+      {this.isLocked = true, this.error});
 
   @override
-  List<Object?> get props => [session, isLocked];
+  List<Object?> get props => [session, isLocked, error];
 
   AuthAuthenticated copyWith({
     AuthSessionEntity? session,
     bool? isLocked,
+    String? error,
+    bool clearError = false,
   }) {
     return AuthAuthenticated(
       session ?? this.session,
       isLocked: isLocked ?? this.isLocked,
+      error: clearError ? null : (error ?? this.error),
     );
   }
 }

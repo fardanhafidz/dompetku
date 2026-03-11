@@ -76,6 +76,7 @@ class _DashboardView extends StatelessWidget {
                       ExpenseSummaryCard(
                         totalExpenses: state.totalExpenses,
                         trendPercentage: state.trendPercentage,
+                        onDetailPressed: () {}, // Enable the button
                       ),
                       const SizedBox(height: AppSpacing.xxxl),
                       const QuickActionsRow(

@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            context.go('/biometric-setup');
+            // Router will handle redirection based on hasPin and isLocked status
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

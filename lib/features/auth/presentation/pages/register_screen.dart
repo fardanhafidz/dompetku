@@ -39,7 +39,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            context.go('/biometric-setup');
+            // Router will handle redirection
           } else if (state is AuthNeedsVerification) {
             context.push('/otp-verification', extra: state.email);
           } else if (state is AuthFailure) {

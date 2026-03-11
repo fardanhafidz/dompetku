@@ -65,9 +65,8 @@ class AppRouter {
 
         // 1. Check for Enrollment (PIN Setup)
         if (!session.hasPin) {
-          final isInSetup = state.matchedLocation == '/biometric-setup' ||
-              state.matchedLocation == '/create-pin';
-          return isInSetup ? null : '/biometric-setup';
+          final isInSetup = state.matchedLocation == '/create-pin';
+          return isInSetup ? null : '/create-pin';
         }
 
         // 2. Check for App Lock

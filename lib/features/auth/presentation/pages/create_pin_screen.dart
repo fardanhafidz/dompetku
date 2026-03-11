@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dompetku/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dompetku/features/auth/presentation/bloc/auth_event.dart';
@@ -33,7 +32,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
             // I'll call the repository directly or add a new event.
             // Let's add SavePinRequested to AuthEvent.
             authBloc.add(SavePinRequested(_pin));
-            context.go('/');
+            // Let the router handle redirection once state updates
           }
         });
       }
@@ -55,10 +54,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.onBackground),
-          onPressed: () => context.pop(),
-        ),
+        automaticallyImplyLeading: false, // Mandatory setup, no back button
       ),
       body: SafeArea(
         child: Padding(

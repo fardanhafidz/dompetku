@@ -163,15 +163,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     final currentState = state;
     if (currentState is AuthAuthenticated) {
+      // Clear any previous error while verifying
+      emit(currentState.copyWith(clearError: true));
+
       final email = currentState.session.user.email;
       final pinResult = await _getPin(email);
       pinResult.fold(
         (failure) => emit(AuthFailure(failure.message)),
         (storedPin) {
           if (storedPin == event.pin) {
-            emit(currentState.copyWith(isLocked: false));
+            emit(currentState.copyWith(isLocked: false, clearError: true));
           } else {
-            emit(const AuthFailure('PIN yang Anda masukkan salah'));
+            emit(currentState.copyWith(
+              isLocked: true,
+              error: 'PIN yang Anda masukkan salah',
+            ));
           }
         },
       );
@@ -214,7 +220,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) {
     final currentState = state;
     if (currentState is AuthAuthenticated) {
-      emit(currentState.copyWith(isLocked: true));
+      emit(currentState.copyWith(isLocked: true, clearError: true));
     }
   }
 }

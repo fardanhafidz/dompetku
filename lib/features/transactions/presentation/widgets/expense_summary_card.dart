@@ -81,8 +81,8 @@ class ExpenseSummaryCard extends StatelessWidget {
               onPressed: onDetailPressed,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: AppColors.accentGreen,
-                elevation: 0,
+                foregroundColor: Colors.black,
+                elevation: 2,
                 padding: const EdgeInsets.symmetric(
                   vertical: AppSpacing.lg,
                 ),
