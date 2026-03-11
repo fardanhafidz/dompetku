@@ -51,7 +51,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
             name: transactionToSave.category.name,
             icon: transactionToSave.category.icon,
             color: transactionToSave.category.color,
-            type: transactionToSave.category.type,
           ),
           date: transactionToSave.date,
           notes: transactionToSave.notes,
@@ -211,7 +210,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
             name: transactionToSave.category.name,
             icon: transactionToSave.category.icon,
             color: transactionToSave.category.color,
-            type: transactionToSave.category.type,
           ),
           date: transactionToSave.date,
           notes: transactionToSave.notes,
@@ -255,7 +253,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    return const Right({'income': 0.0, 'expense': 0.0, 'total': 0.0});
+    return const Right({'total_expense': 0.0});
   }
 
   @override

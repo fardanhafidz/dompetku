@@ -5,16 +5,14 @@ class CategoryEntity extends Equatable {
   final String name;
   final String icon;
   final String color; // Hex string (ex: #FF5733)
-  final String type; // 'income' atau 'expense'
 
   const CategoryEntity({
     required this.id,
     required this.name,
     required this.icon,
     required this.color,
-    required this.type,
   });
 
   @override
-  List<Object?> get props => [id, name, icon, color, type];
+  List<Object?> get props => [id, name, icon, color];
 }

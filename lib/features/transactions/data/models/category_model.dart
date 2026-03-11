@@ -6,7 +6,6 @@ class CategoryModel extends CategoryEntity {
     required super.name,
     required super.icon,
     required super.color,
-    required super.type,
   });
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
@@ -15,7 +14,6 @@ class CategoryModel extends CategoryEntity {
       name: json['name'] as String,
       icon: json['icon'] as String,
       color: json['color'] as String,
-      type: json['type'] as String,
     );
   }
 
@@ -25,7 +23,6 @@ class CategoryModel extends CategoryEntity {
       'name': name,
       'icon': icon,
       'color': color,
-      'type': type,
     };
   }
 }

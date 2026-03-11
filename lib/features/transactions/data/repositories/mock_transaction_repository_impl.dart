@@ -16,42 +16,36 @@ class MockTransactionRepositoryImpl implements TransactionRepository {
       name: 'Food',
       icon: 'restaurant',
       color: '#4CAF50',
-      type: 'expense',
     ),
     CategoryModel(
       id: 'cat-2',
       name: 'Transport',
       icon: 'directions_car',
       color: '#2196F3',
-      type: 'expense',
     ),
     CategoryModel(
       id: 'cat-3',
       name: 'Groceries',
       icon: 'shopping_cart',
       color: '#FF9800',
-      type: 'expense',
     ),
     CategoryModel(
       id: 'cat-4',
       name: 'Coffee',
       icon: 'coffee',
       color: '#795548',
-      type: 'expense',
     ),
     CategoryModel(
       id: 'cat-5',
       name: 'Bills',
       icon: 'receipt_long',
       color: '#F44336',
-      type: 'expense',
     ),
     CategoryModel(
       id: 'cat-6',
       name: 'Entertainment',
       icon: 'movie',
       color: '#E91E63',
-      type: 'expense',
     ),
   ];
 
@@ -165,19 +159,13 @@ class MockTransactionRepositoryImpl implements TransactionRepository {
     await Future.delayed(const Duration(milliseconds: 300));
 
     double totalExpense = 0;
-    double totalIncome = 0;
 
     for (final t in _transactions) {
-      if (t.category.type == 'expense') {
-        totalExpense += t.amount;
-      } else {
-        totalIncome += t.amount;
-      }
+      totalExpense += t.amount;
     }
 
     return Right({
       'total_expense': totalExpense,
-      'total_income': totalIncome,
     });
   }
 

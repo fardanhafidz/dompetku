@@ -11,42 +11,36 @@ class MockTransactionRemoteDataSourceImpl implements TransactionRemoteDataSource
       name: 'Food',
       icon: 'restaurant',
       color: '#4CAF50',
-      type: 'expense',
     ),
     CategoryModel(
       id: 'cat-2',
       name: 'Transport',
       icon: 'directions_car',
       color: '#2196F3',
-      type: 'expense',
     ),
     CategoryModel(
       id: 'cat-3',
       name: 'Groceries',
       icon: 'shopping_cart',
       color: '#FF9800',
-      type: 'expense',
     ),
     CategoryModel(
       id: 'cat-4',
       name: 'Coffee',
       icon: 'coffee',
       color: '#795548',
-      type: 'expense',
     ),
     CategoryModel(
       id: 'cat-5',
       name: 'Bills',
       icon: 'receipt_long',
       color: '#F44336',
-      type: 'expense',
     ),
     CategoryModel(
       id: 'cat-6',
       name: 'Entertainment',
       icon: 'movie',
       color: '#E91E63',
-      type: 'expense',
     ),
   ];
 

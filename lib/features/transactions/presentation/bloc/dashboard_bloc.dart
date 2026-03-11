@@ -25,10 +25,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         emit(DashboardFailure(failure.message));
       },
       (transactions) {
-        // 2. Kalkulasi Total Income & Expense dari transaksi asli
-        final expense = transactions
-            .where((t) => t.category.type == 'expense')
-            .fold(0.0, (sum, t) => sum + t.amount);
+        // 2. Kalkulasi Total Expense dari semua transaksi asli
+        final expense = transactions.fold(0.0, (sum, t) => sum + t.amount);
             
         emit(DashboardSuccess(
           totalExpenses: expense,
