@@ -51,6 +51,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AppLockTriggered>(_onAppLockTriggered);
   }
 
+
+
   Future<void> _onAuthCheckRequested(
     AuthCheckRequested event,
     Emitter<AuthState> emit,
