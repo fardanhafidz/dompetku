@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/di/injection_container.dart';
+
 import '../../../../shared/theme/app_colors.dart';
 import '../../../../shared/theme/app_design_system.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
@@ -21,7 +23,7 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => DashboardBloc()..add(DashboardLoaded()),
+      create: (_) => sl<DashboardBloc>()..add(DashboardLoaded()),
       child: const _DashboardView(),
     );
   }

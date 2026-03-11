@@ -18,6 +18,24 @@ import '../../features/auth/domain/usecases/verify_otp.dart';
 import '../../features/auth/domain/usecases/pin_use_cases.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 
+import 'package:path_provider/path_provider.dart';
+import 'package:isar/isar.dart';
+
+import '../../features/transactions/data/models/category_isar.dart';
+import '../../features/transactions/data/models/transaction_isar.dart';
+import '../../features/transactions/data/datasources/transaction_local_data_source.dart';
+import '../../features/transactions/data/datasources/transaction_remote_data_source.dart';
+import '../../features/transactions/data/datasources/mock_transaction_remote_data_source_impl.dart';
+import '../../features/transactions/data/repositories/transaction_repository_impl.dart';
+import '../../features/transactions/domain/repositories/transaction_repository.dart';
+import '../../features/transactions/domain/usecases/add_transaction.dart';
+import '../../features/transactions/domain/usecases/delete_transaction.dart';
+import '../../features/transactions/domain/usecases/get_categories.dart';
+import '../../features/transactions/domain/usecases/get_transactions.dart';
+import '../../features/transactions/domain/usecases/update_transaction.dart';
+import '../../features/transactions/presentation/bloc/dashboard_bloc.dart';
+import '../../features/transactions/presentation/bloc/transaction_form_bloc.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -67,10 +85,57 @@ Future<void> init() async {
     ),
   );
 
+  // ─── Transaction Feature ────────────────────────────────
+
+  // Bloc (factory = instance baru setiap kali dibuka)
+  sl.registerFactory<TransactionFormBloc>(
+    () => TransactionFormBloc(
+      addTransaction: sl(),
+      updateTransaction: sl(),
+      deleteTransaction: sl(),
+      getCategories: sl(),
+    ),
+  );
+
+  sl.registerFactory<DashboardBloc>(
+    () => DashboardBloc(getTransactions: sl()),
+  );
+
+  // Use Cases
+  sl.registerLazySingleton(() => AddTransactionUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateTransactionUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteTransactionUseCase(sl()));
+  sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
+  sl.registerLazySingleton(() => GetTransactionsUseCase(sl()));
+
+  // Repository (Local + Remote dengan logic Sync)
+  sl.registerLazySingleton<TransactionLocalDataSource>(
+    () => TransactionLocalDataSourceImpl(isar: sl()),
+  );
+
+  sl.registerLazySingleton<TransactionRemoteDataSource>(
+    () => MockTransactionRemoteDataSourceImpl(),
+  );
+
+  sl.registerLazySingleton<TransactionRepository>(
+    () => TransactionRepositoryImpl(
+      localDataSource: sl(),
+      remoteDataSource: sl(),
+    ),
+  );
+
   // External
+  final dir = await getApplicationDocumentsDirectory();
+  final isar = await Isar.open(
+    [CategoryIsarSchema, TransactionIsarSchema],
+    directory: dir.path,
+  );
+  sl.registerLazySingleton(() => isar);
+
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
   sl.registerLazySingleton(() => const FlutterSecureStorage());
   sl.registerLazySingleton(() => Supabase.instance.client);
   sl.registerLazySingleton(() => LocalAuthentication());
 }
+

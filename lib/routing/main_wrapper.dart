@@ -115,7 +115,7 @@ class MainWrapper extends StatelessWidget {
   Widget _buildCenterFab(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // TODO: Navigate to add transaction or show bottom sheet
+        context.push('/form-input');
       },
       child: Transform.translate(
         offset: const Offset(0, -24), // Lift the FAB up a bit to match design
@@ -141,7 +141,8 @@ class MainWrapper extends StatelessWidget {
               ),
               child: const Center(
                 child: Icon(
-                  Icons.document_scanner_outlined, // Closer to the figma scanner icon
+                  Icons
+                      .document_scanner_outlined, // Closer to the figma scanner icon
                   color: Colors.white,
                   size: 26,
                 ),

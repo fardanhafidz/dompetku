@@ -1,3 +1,4 @@
+import 'package:dompetku/features/transactions/presentation/pages/form_input_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -111,6 +112,11 @@ class AppRouter {
       GoRoute(
         path: '/pin-login',
         builder: (context, state) => const PinLoginScreen(),
+      ),
+      GoRoute(
+        path: '/form-input',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const FormInputPage(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
