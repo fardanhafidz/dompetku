@@ -17,23 +17,18 @@ const CategoryIsarSchema = CollectionSchema(
   name: r'CategoryIsar',
   id: -4389972771325497694,
   properties: {
-    r'color': PropertySchema(
-      id: 0,
-      name: r'color',
-      type: IsarType.string,
-    ),
     r'icon': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'icon',
       type: IsarType.string,
     ),
     r'id': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'id',
       type: IsarType.string,
     ),
     r'name': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'name',
       type: IsarType.string,
     )
@@ -72,7 +67,6 @@ int _categoryIsarEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.color.length * 3;
   bytesCount += 3 + object.icon.length * 3;
   bytesCount += 3 + object.id.length * 3;
   bytesCount += 3 + object.name.length * 3;
@@ -85,10 +79,9 @@ void _categoryIsarSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.color);
-  writer.writeString(offsets[1], object.icon);
-  writer.writeString(offsets[2], object.id);
-  writer.writeString(offsets[3], object.name);
+  writer.writeString(offsets[0], object.icon);
+  writer.writeString(offsets[1], object.id);
+  writer.writeString(offsets[2], object.name);
 }
 
 CategoryIsar _categoryIsarDeserialize(
@@ -98,11 +91,10 @@ CategoryIsar _categoryIsarDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = CategoryIsar();
-  object.color = reader.readString(offsets[0]);
-  object.icon = reader.readString(offsets[1]);
-  object.id = reader.readString(offsets[2]);
+  object.icon = reader.readString(offsets[0]);
+  object.id = reader.readString(offsets[1]);
   object.isarId = id;
-  object.name = reader.readString(offsets[3]);
+  object.name = reader.readString(offsets[2]);
   return object;
 }
 
@@ -118,8 +110,6 @@ P _categoryIsarDeserializeProp<P>(
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
-    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -321,140 +311,6 @@ extension CategoryIsarQueryWhere
 
 extension CategoryIsarQueryFilter
     on QueryBuilder<CategoryIsar, CategoryIsar, QFilterCondition> {
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterFilterCondition> colorEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'color',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterFilterCondition>
-      colorGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'color',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterFilterCondition> colorLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'color',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterFilterCondition> colorBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'color',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterFilterCondition>
-      colorStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'color',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterFilterCondition> colorEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'color',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterFilterCondition> colorContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'color',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterFilterCondition> colorMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'color',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterFilterCondition>
-      colorIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'color',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterFilterCondition>
-      colorIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'color',
-        value: '',
-      ));
-    });
-  }
-
   QueryBuilder<CategoryIsar, CategoryIsar, QAfterFilterCondition> iconEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -918,18 +774,6 @@ extension CategoryIsarQueryLinks
 
 extension CategoryIsarQuerySortBy
     on QueryBuilder<CategoryIsar, CategoryIsar, QSortBy> {
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterSortBy> sortByColor() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'color', Sort.asc);
-    });
-  }
-
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterSortBy> sortByColorDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'color', Sort.desc);
-    });
-  }
-
   QueryBuilder<CategoryIsar, CategoryIsar, QAfterSortBy> sortByIcon() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'icon', Sort.asc);
@@ -969,18 +813,6 @@ extension CategoryIsarQuerySortBy
 
 extension CategoryIsarQuerySortThenBy
     on QueryBuilder<CategoryIsar, CategoryIsar, QSortThenBy> {
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterSortBy> thenByColor() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'color', Sort.asc);
-    });
-  }
-
-  QueryBuilder<CategoryIsar, CategoryIsar, QAfterSortBy> thenByColorDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'color', Sort.desc);
-    });
-  }
-
   QueryBuilder<CategoryIsar, CategoryIsar, QAfterSortBy> thenByIcon() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'icon', Sort.asc);
@@ -1032,13 +864,6 @@ extension CategoryIsarQuerySortThenBy
 
 extension CategoryIsarQueryWhereDistinct
     on QueryBuilder<CategoryIsar, CategoryIsar, QDistinct> {
-  QueryBuilder<CategoryIsar, CategoryIsar, QDistinct> distinctByColor(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'color', caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<CategoryIsar, CategoryIsar, QDistinct> distinctByIcon(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1066,12 +891,6 @@ extension CategoryIsarQueryProperty
   QueryBuilder<CategoryIsar, int, QQueryOperations> isarIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isarId');
-    });
-  }
-
-  QueryBuilder<CategoryIsar, String, QQueryOperations> colorProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'color');
     });
   }
 

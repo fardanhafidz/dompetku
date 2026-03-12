@@ -15,37 +15,31 @@ class MockTransactionRepositoryImpl implements TransactionRepository {
       id: 'cat-1',
       name: 'Food',
       icon: 'restaurant',
-      color: '#4CAF50',
     ),
     CategoryModel(
       id: 'cat-2',
       name: 'Transport',
       icon: 'directions_car',
-      color: '#2196F3',
     ),
     CategoryModel(
       id: 'cat-3',
       name: 'Groceries',
       icon: 'shopping_cart',
-      color: '#FF9800',
     ),
     CategoryModel(
       id: 'cat-4',
       name: 'Coffee',
       icon: 'coffee',
-      color: '#795548',
     ),
     CategoryModel(
       id: 'cat-5',
       name: 'Bills',
       icon: 'receipt_long',
-      color: '#F44336',
     ),
     CategoryModel(
       id: 'cat-6',
       name: 'Entertainment',
       icon: 'movie',
-      color: '#E91E63',
     ),
   ];
 

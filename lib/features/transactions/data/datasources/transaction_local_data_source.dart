@@ -41,6 +41,13 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
     final transactions = await isar.transactionIsars.where().sortByDateDesc().findAll();
     for (var t in transactions) {
       await t.category.load();
+      if (t.category.value == null) {
+         // Fallback manual if broken relational link to avoid crash
+         t.category.value = CategoryIsar()
+            ..id = 'unknown'
+            ..name = 'Unknown'
+            ..icon = 'help_outline';
+      }
     }
     return transactions.map((e) => e.toEntity()).toList();
   }

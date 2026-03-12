@@ -13,15 +13,13 @@ class CategoryIsar {
 
   late String name;
   late String icon;
-  late String color;
 
   // Konversi dari Entity ke Isar (untuk menyimpan data)
   static CategoryIsar fromEntity(CategoryEntity entity) {
     return CategoryIsar()
       ..id = entity.id
       ..name = entity.name
-      ..icon = entity.icon
-      ..color = entity.color;
+      ..icon = entity.icon;
   }
 
   // Konversi dari Isar ke Entity (untuk dibaca UI)
@@ -30,7 +28,6 @@ class CategoryIsar {
       id: id,
       name: name,
       icon: icon,
-      color: color,
     );
   }
 }
