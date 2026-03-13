@@ -25,7 +25,7 @@ import '../../features/transactions/data/models/category_isar.dart';
 import '../../features/transactions/data/models/transaction_isar.dart';
 import '../../features/transactions/data/datasources/transaction_local_data_source.dart';
 import '../../features/transactions/data/datasources/transaction_remote_data_source.dart';
-import '../../features/transactions/data/datasources/mock_transaction_remote_data_source_impl.dart';
+import '../../features/transactions/data/datasources/supabase_transaction_remote_data_source_impl.dart';
 import '../../features/transactions/data/repositories/transaction_repository_impl.dart';
 import '../../features/transactions/domain/repositories/transaction_repository.dart';
 import '../../features/transactions/domain/usecases/add_transaction.dart';
@@ -114,7 +114,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<TransactionRemoteDataSource>(
-    () => MockTransactionRemoteDataSourceImpl(),
+    () => SupabaseTransactionRemoteDataSourceImpl(sl()),
   );
 
   sl.registerLazySingleton<TransactionRepository>(
